@@ -1,0 +1,72 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "demo@portal.com",
+      "name": "Abhay Kamble",
+      "password": "password"
+    },
+    {
+      "id": "1779907415345",
+      "name": "Vibhanshu G",
+      "email": "vibhanshu@gmail.com",
+      "password": "vibhanshu"
+    }
+  ],
+  "meetings": [
+    {
+      "id": "m1",
+      "userId": "1",
+      "title": "Weekly Strategy Sync",
+      "date": "2026-06-01",
+      "time": "10:00",
+      "agenda": "Review quarterly targets, plan content calendar, and discuss client onboarding workflow.",
+      "participants": "Abhay Kamble, Rohit Patil, Sneha Shinde",
+      "status": "Upcoming",
+      "meetLink": "https://meet.google.com/new"
+    },
+    {
+      "id": "m2",
+      "userId": "1",
+      "title": "UI Design Review",
+      "date": "2026-05-26",
+      "time": "14:30",
+      "agenda": "Finalize inner page card layouts, typography alignment, and color palette validation.",
+      "participants": "Abhay Kamble, Sneha Shinde",
+      "status": "Completed"
+    },
+    {
+      "id": "m_1779904819815",
+      "userId": "1",
+      "title": "Internship meet 2 ",
+      "date": "2026-05-31",
+      "time": "14:29",
+      "agenda": "to discuss about project with vrukshani ma'am",
+      "participants": "Abhay, Vibhanshu ",
+      "status": "Upcoming",
+      "meetLink": "https://meet.google.com/new"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "userId": "1",
+      "title": "Setup JSON Local Database",
+      "description": "Establish a robust file-based local storage system with helper endpoints for seamless persistence.",
+      "assignedMember": "Abhay Kamble",
+      "deadline": "2026-05-29",
+      "priority": "High",
+      "status": "Pending"
+    },
+    {
+      "id": "t2",
+      "userId": "1",
+      "title": "Verify Color Scheme Matching",
+      "description": "Review newly designed pages to ensure perfect green and black aesthetic alignment with no layout changes.",
+      "assignedMember": "Rohit Patil",
+      "deadline": "2026-05-30",
+      "priority": "Medium",
+      "status": "Pending"
+    }
+  ]
+}
