@@ -44,7 +44,7 @@ export default function DashboardPage() {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessageText, setNewMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Group states
   const [groups, setGroups] = useState<Group[]>([]);
@@ -190,8 +190,8 @@ export default function DashboardPage() {
   }, [session, activeGroupId]);
 
   useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -665,7 +665,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Chat message list area */}
-            <div className="bg-slate-50/50 rounded-xl p-4 border border-solid border-slate-100 h-[380px] overflow-y-auto flex flex-col gap-4">
+            <div ref={chatContainerRef} className="bg-slate-50/50 rounded-xl p-4 border border-solid border-slate-100 h-[380px] overflow-y-auto flex flex-col gap-4">
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-slate-400 font-['DM_Sans'] gap-2">
                   <span className="text-3xl">💤</span>
@@ -721,7 +721,6 @@ export default function DashboardPage() {
                   );
                 })
               )}
-              <div ref={chatEndRef} />
             </div>
 
             {/* Send Message Form */}

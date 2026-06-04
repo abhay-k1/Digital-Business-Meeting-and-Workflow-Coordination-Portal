@@ -312,9 +312,15 @@ export default function MeetingsPage() {
           <div className="text-base text-slate-500 font-['DM_Sans']">
             Workspace: 🏢 <strong className="text-slate-800 text-lg font-['Space_Grotesk']">{activeGroup.name}</strong> (Code: <span className="font-mono bg-[#A25244]/10 border border-solid border-[#A25244]/20 px-2.5 py-0.5 rounded text-[#A25244] font-bold">{activeGroup.code}</span>)
           </div>
-          <a href="/dashboard" className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors no-underline">
+          <button
+            onClick={() => {
+              localStorage.removeItem("active_group_id");
+              window.location.href = "/dashboard";
+            }}
+            className="cursor-pointer border-none bg-transparent text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors font-['Space_Grotesk']"
+          >
             Switch Workspace Group
-          </a>
+          </button>
         </div>
 
         {/* Title Section */}
