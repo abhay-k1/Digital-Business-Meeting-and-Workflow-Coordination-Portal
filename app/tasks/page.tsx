@@ -185,7 +185,7 @@ export default function TasksPage() {
     return (
       <div className="w-full min-h-screen flex flex-col items-center justify-center bg-slate-50 font-['Space_Grotesk'] text-slate-800">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-600 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-slate-200 border-t-[#097C87] rounded-full animate-spin"></div>
           <span className="text-xl font-medium tracking-wide">Loading tasks workspace...</span>
         </div>
       </div>
@@ -202,7 +202,7 @@ export default function TasksPage() {
         {/* Active Group Sub-header Banner */}
         <div className="w-full flex justify-between items-center bg-white border border-solid border-slate-200 p-5 rounded-2xl shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)]">
           <div className="text-base text-slate-500 font-['DM_Sans']">
-            Workspace: 🏢 <strong className="text-slate-800 text-lg">{activeGroup.name}</strong> (Code: <span className="font-mono bg-slate-100 border border-solid border-slate-200 px-2.5 py-0.5 rounded text-slate-700 font-semibold">{activeGroup.code}</span>)
+            Workspace: 🏢 <strong className="text-slate-800 text-lg font-['Space_Grotesk']">{activeGroup.name}</strong> (Code: <span className="font-mono bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 px-2.5 py-0.5 rounded text-[#097C87] font-bold">{activeGroup.code}</span>)
           </div>
           <a href="/dashboard" className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors no-underline">
             Switch Workspace Group
@@ -224,7 +224,7 @@ export default function TasksPage() {
         <div className="w-full flex items-start gap-12 mq1125:flex-col">
           {/* Allocator Form Section (Only for Manager) */}
           {isManager ? (
-            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-6 mq1125:w-full">
+            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-6 mq1125:w-full">
               <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
                 Allocate New Task
               </h2>
@@ -249,7 +249,7 @@ export default function TasksPage() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Design Dashboard Prototypes"
-                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition"
                   />
                 </div>
 
@@ -260,7 +260,7 @@ export default function TasksPage() {
                       required
                       value={assignedMemberId}
                       onChange={(e) => setAssignedMemberId(e.target.value)}
-                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-400 transition cursor-pointer"
+                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#097C87] transition cursor-pointer"
                     >
                       {activeGroup.members.map((m) => (
                         <option key={m.id} value={m.id}>
@@ -276,7 +276,7 @@ export default function TasksPage() {
                       required
                       value={deadline}
                       onChange={(e) => setDeadline(e.target.value)}
-                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-400 transition cursor-pointer"
+                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#097C87] transition cursor-pointer"
                     />
                   </div>
                 </div>
@@ -289,9 +289,9 @@ export default function TasksPage() {
                         key={lvl}
                         type="button"
                         onClick={() => setPriority(lvl)}
-                        className={`cursor-pointer flex-1 py-3 px-4 rounded-xl text-sm font-semibold text-center border transition-all duration-205 ${
+                        className={`cursor-pointer flex-1 py-3 px-4 rounded-xl text-sm font-bold text-center border transition-all duration-200 ${
                           priority === lvl
-                            ? "bg-slate-700 text-white border-solid border-slate-700 shadow-sm"
+                            ? "bg-[#097C87] text-white border-solid border-[#097C87] shadow-sm"
                             : "bg-white text-slate-700 border-solid border-slate-200 hover:bg-slate-50"
                         }`}
                       >
@@ -309,13 +309,13 @@ export default function TasksPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Provide instructions and expectations for this task..."
-                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition resize-none"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="cursor-pointer border-none py-3.5 px-6 bg-slate-700 hover:bg-slate-800 text-white font-semibold rounded-xl text-base shadow-sm hover:shadow transition duration-200 mt-2"
+                  className="cursor-pointer border-none py-3.5 px-6 bg-[#097C87] hover:bg-[#23CED9] text-white font-bold rounded-xl text-base shadow-sm hover:shadow transition duration-200 mt-2"
                 >
                   Confirm Allocation
                 </button>
@@ -323,7 +323,7 @@ export default function TasksPage() {
             </div>
           ) : (
             /* Non-manager placeholder banner */
-            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-4 mq1125:w-full">
+            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-4 mq1125:w-full">
               <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">Allocate New Task</h2>
               <div className="bg-slate-50 text-slate-700 p-6 rounded-xl border border-solid border-slate-200 flex flex-col gap-3">
                 <span className="text-base font-bold">📋 View Only Access</span>
@@ -360,11 +360,11 @@ export default function TasksPage() {
                 {tasks.map((task) => (
                   <div
                     key={task.id}
-                    className="w-full shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-4 relative"
+                    className="w-full shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-4 relative"
                   >
                     <div className="flex justify-between items-start gap-4">
                       <div className="flex flex-col gap-1">
-                        <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">
+                        <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">
                           {task.title}
                         </h3>
                         <div className="text-sm text-slate-500 font-['DM_Sans'] mt-1">
@@ -372,14 +372,14 @@ export default function TasksPage() {
                         </div>
                       </div>
 
-                      {/* Priority Badges */}
+                      {/* Priority Badges styled with palette colors */}
                       <span
-                        className={`text-xs px-3 py-1 rounded-md font-semibold border border-solid ${
+                        className={`text-xs px-3 py-1 rounded-md font-bold border border-solid ${
                           task.priority === "High"
                             ? "bg-red-50 text-red-700 border-red-150"
                             : task.priority === "Medium"
-                            ? "bg-orange-50 text-orange-600 border-orange-100"
-                            : "bg-slate-50 text-slate-650 border-slate-200"
+                            ? "bg-orange-50 text-orange-650 border-orange-100"
+                            : "bg-[#A1CCA6]/15 text-[#097C87] border-[#A1CCA6]/30"
                         }`}
                       >
                         {task.priority} Priority
@@ -391,7 +391,7 @@ export default function TasksPage() {
                     </p>
 
                     <div className="flex justify-between items-center gap-4 pt-2 border-t border-solid border-slate-100 mq450:flex-col mq450:items-start">
-                      <div className="text-sm text-slate-700 font-['DM_Sans']">
+                      <div className="text-sm text-slate-750 font-['DM_Sans']">
                         📅 Deadline: <span className="font-semibold">{task.deadline}</span>
                       </div>
 
@@ -401,12 +401,12 @@ export default function TasksPage() {
                         <select
                           value={task.status}
                           onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                          className={`cursor-pointer rounded-lg px-3 py-1.5 font-semibold text-xs outline-none border border-solid transition duration-200 ${
+                          className={`cursor-pointer rounded-lg px-3 py-1.5 font-bold text-xs outline-none border border-solid transition duration-200 ${
                             task.status === "Completed"
                               ? "bg-slate-800 text-white border-slate-800"
                               : task.status === "In Progress"
-                              ? "bg-slate-100 text-slate-700 border-slate-200"
-                              : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                              ? "bg-[#23CED9]/10 text-[#097C87] border-[#23CED9]/20"
+                              : "bg-white text-slate-650 border-slate-200 hover:bg-slate-50"
                           }`}
                         >
                           <option value="Pending">Pending</option>

@@ -208,7 +208,7 @@ export default function DashboardPage() {
     return (
       <div className="w-full min-h-screen flex flex-col items-center justify-center bg-slate-50 font-['Space_Grotesk'] text-slate-800">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-600 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-slate-200 border-t-[#097C87] rounded-full animate-spin"></div>
           <span className="text-xl font-medium tracking-wide">Accessing Workspace Dashboard...</span>
         </div>
       </div>
@@ -248,7 +248,7 @@ export default function DashboardPage() {
                 </div>
               )}
               {groupSuccess && (
-                <div className="bg-slate-100 text-slate-800 px-5 py-3.5 rounded-xl border border-solid border-slate-200 text-sm font-medium">
+                <div className="bg-emerald-50 text-emerald-800 px-5 py-3.5 rounded-xl border border-solid border-emerald-200 text-sm font-medium">
                   ✅ {groupSuccess}
                 </div>
               )}
@@ -263,7 +263,7 @@ export default function DashboardPage() {
               </h2>
 
               {groups.length === 0 ? (
-                <div className="w-full rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
+                <div className="w-full rounded-2xl border border-dashed border-slate-350 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
                   You haven&apos;t created or joined any collaboration groups yet. Get started on the right!
                 </div>
               ) : (
@@ -273,23 +273,23 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={group.id}
-                        className="shadow-[0_4px_20px_-4px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 p-6 flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300 cursor-pointer"
+                        className="shadow-[0_4px_20px_-4px_rgba(9,124,135,0.06)] rounded-2xl bg-white border-l-4 border-l-[#097C87] border-y border-r border-solid border-slate-200/80 p-6 flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300 cursor-pointer"
                         onClick={() => handleSelectGroup(group)}
                       >
                         <div className="flex flex-col gap-2.5 min-w-0">
-                          <h3 className="m-0 text-xl font-bold text-slate-900 truncate">
+                          <h3 className="m-0 text-xl font-bold text-slate-900 truncate font-['Space_Grotesk']">
                             {group.name}
                           </h3>
                           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500 font-['DM_Sans']">
                             <span>👑 Manager: <strong className="text-slate-700 font-medium">{isGroupManager ? "You" : group.members.find(m => m.id === group.managerId)?.name || "Unknown"}</strong></span>
                             <span>👥 Members: <strong className="text-slate-700 font-medium">{group.members.length}</strong></span>
                           </div>
-                          <span className="inline-block text-xs bg-slate-100 border border-solid border-slate-200 text-slate-700 px-2.5 py-1 rounded-md w-fit font-semibold font-mono tracking-wider">
+                          <span className="inline-block text-xs bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 text-[#097C87] px-2.5 py-1 rounded-md w-fit font-bold font-mono tracking-wider">
                             CODE: {group.code}
                           </span>
                         </div>
                         <button
-                          className="cursor-pointer border-none bg-slate-700 hover:bg-slate-800 text-white rounded-xl px-4 py-2.5 text-sm font-semibold hover:shadow transition-all duration-200 shrink-0"
+                          className="cursor-pointer border-none bg-[#097C87] hover:bg-[#23CED9] text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:shadow transition-all duration-200 shrink-0"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleSelectGroup(group);
@@ -322,13 +322,13 @@ export default function DashboardPage() {
                       value={newGroupName}
                       onChange={(e) => setNewGroupName(e.target.value)}
                       placeholder="e.g. Quality Assurance, Engineering"
-                      className="bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition"
+                      className="bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={actionLoading}
-                    className="cursor-pointer border-none py-3 px-6 bg-slate-700 hover:bg-slate-850 text-white font-semibold rounded-xl hover:shadow transition-all duration-200 disabled:opacity-50"
+                    className="cursor-pointer border-none py-3.5 px-6 bg-[#097C87] hover:bg-[#23CED9] text-white font-bold rounded-xl hover:shadow transition-all duration-200 disabled:opacity-50"
                   >
                     {actionLoading ? "Creating..." : "Create Group & Enter"}
                   </button>
@@ -351,13 +351,13 @@ export default function DashboardPage() {
                       value={inviteCode}
                       onChange={(e) => setInviteCode(e.target.value)}
                       placeholder="e.g. GRP-4819"
-                      className="bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition"
+                      className="bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={actionLoading}
-                    className="cursor-pointer border border-solid border-slate-200 py-3 px-6 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl hover:shadow transition-all duration-200 disabled:opacity-50"
+                    className="cursor-pointer border border-solid border-slate-200 py-3.5 px-6 bg-white hover:bg-slate-50 text-slate-750 font-bold rounded-xl hover:shadow transition-all duration-200 disabled:opacity-50"
                   >
                     {actionLoading ? "Joining..." : "Join Group & Enter"}
                   </button>
@@ -370,14 +370,14 @@ export default function DashboardPage() {
         /* ACTIVE GROUP WORKSPACE DASHBOARD SCREEN */
         <main className="self-stretch flex flex-col gap-12 px-16 box-border max-w-full mq800:px-6">
           {/* Active Group Header */}
-          <div className="w-full flex justify-between items-center bg-white border border-solid border-slate-200 p-6 rounded-2xl shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] flex-wrap gap-4">
+          <div className="w-full flex justify-between items-center bg-white border-l-4 border-l-[#097C87] border-y border-r border-solid border-slate-200 p-6 rounded-2xl shadow-[0_4px_25px_-5px_rgba(9,124,135,0.05)] flex-wrap gap-4">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs uppercase tracking-wider text-slate-400 font-bold">Active Workspace</span>
-              <h2 className="m-0 text-2xl font-bold text-slate-900 flex items-center gap-3">
+              <h2 className="m-0 text-2xl font-bold text-slate-900 flex items-center gap-3 font-['Space_Grotesk']">
                 🏢 {activeGroup.name}
               </h2>
               <div className="flex items-center gap-4 text-sm text-slate-500 font-['DM_Sans'] mt-1">
-                <span>Invite Code: <strong className="font-mono bg-slate-100 border border-solid border-slate-200 px-2 py-0.5 rounded text-slate-700 font-semibold">{activeGroup.code}</strong></span>
+                <span>Invite Code: <strong className="font-mono bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 px-2.5 py-0.5 rounded text-[#097C87] font-bold">{activeGroup.code}</strong></span>
                 <span>Role: <strong className="text-slate-700 font-medium">{isManager ? "Manager (Creator)" : "Employee / Member"}</strong></span>
               </div>
             </div>
@@ -398,7 +398,7 @@ export default function DashboardPage() {
                 showLabel={true}
               />
               <h2 className="m-0 text-2xl font-medium text-slate-900 font-['Space_Grotesk']">
-                Welcome back, <span className="font-bold text-slate-800 bg-slate-100 border border-solid border-slate-200/80 px-3.5 py-1 rounded-lg">{session.name}</span>
+                Welcome back, <span className="font-bold text-slate-800 bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 px-3.5 py-1 rounded-lg">{session.name}</span>
               </h2>
             </div>
 
@@ -407,13 +407,13 @@ export default function DashboardPage() {
                 <>
                   <a
                     href="/meetings"
-                    className="cursor-pointer border-none bg-slate-700 text-white rounded-xl px-6 py-3.5 font-semibold text-base hover:bg-slate-800 transition duration-200 shadow-sm hover:shadow"
+                    className="cursor-pointer border-none bg-[#097C87] hover:bg-[#23CED9] text-white rounded-xl px-6 py-3.5 font-bold text-base transition duration-200 shadow-sm hover:shadow"
                   >
                     Schedule Meeting
                   </a>
                   <a
                     href="/tasks"
-                    className="cursor-pointer border border-solid border-slate-200 bg-white text-slate-700 rounded-xl px-6 py-3.5 font-semibold text-base hover:bg-slate-50 transition duration-200 shadow-sm hover:shadow"
+                    className="cursor-pointer border border-solid border-[#097C87]/30 bg-white text-[#097C87] hover:bg-[#097C87]/5 rounded-xl px-6 py-3.5 font-bold text-base transition duration-200 shadow-sm hover:shadow"
                   >
                     Allocate Task
                   </a>
@@ -422,32 +422,33 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Dynamic Analytics Summary Cards */}
+          {/* Dynamic Analytics Summary Cards (Integrates Custom Colors) */}
           <section className="grid grid-cols-4 gap-6 w-full mq1125:grid-cols-2 mq800:grid-cols-1">
-            <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300">
+            <div className="shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
               <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Upcoming Meetings</span>
-              <span className="text-5xl font-bold text-slate-900 tracking-tight">{upcomingMeetings.length}</span>
+              <span className="text-5xl font-bold text-[#097C87] tracking-tight">{upcomingMeetings.length}</span>
               <span className="text-xs font-['DM_Sans'] text-slate-400">Total scheduled: {meetings.length}</span>
             </div>
 
-            <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300">
+            <div className="shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
               <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Pending Tasks</span>
               <span className="text-5xl font-bold text-slate-700 tracking-tight">{pendingTasks.length}</span>
               <span className="text-xs font-['DM_Sans'] text-slate-400">Completed tasks: {completedTasksCount}</span>
             </div>
 
-            <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300">
+            <div className="shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
               <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Critical Hotspots</span>
               <span className="text-5xl font-bold text-red-650 tracking-tight">{highPriorityTasksCount}</span>
               <span className="text-xs font-['DM_Sans'] text-slate-400">High priority pending tasks</span>
             </div>
 
-            <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-slate-700 border border-solid border-slate-800 p-8 flex flex-col gap-2 text-white hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
-              <span className="text-sm font-semibold text-slate-300 font-['DM_Sans']">Completion Rate</span>
-              <span className="text-5xl font-bold text-slate-100 tracking-tight">
+            {/* Glowing Gradient Completion card */}
+            <div className="shadow-[0_8px_30px_rgba(9,124,135,0.08)] rounded-2xl bg-gradient-to-br from-[#097C87] to-[#23CED9] p-8 flex flex-col gap-2 text-white hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+              <span className="text-sm font-semibold text-white/90 font-['DM_Sans']">Completion Rate</span>
+              <span className="text-5xl font-bold text-white tracking-tight">
                 {tasks.length > 0 ? Math.round((completedTasksCount / tasks.length) * 100) : 0}%
               </span>
-              <span className="text-xs font-['DM_Sans'] text-slate-400">Based on allocated workloads</span>
+              <span className="text-xs font-['DM_Sans'] text-white/80">Based on allocated workloads</span>
             </div>
           </section>
 
@@ -458,7 +459,7 @@ export default function DashboardPage() {
               <div className="flex justify-between items-center">
                 <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">Upcoming Team Syncs</h3>
                 {isManager && (
-                  <a href="/meetings" className="text-sm text-slate-600 font-semibold hover:text-slate-950 transition-colors">
+                  <a href="/meetings" className="text-sm text-[#097C87] font-bold hover:text-[#23CED9] transition-colors no-underline">
                     Manage Meetings &rarr;
                   </a>
                 )}
@@ -476,8 +477,8 @@ export default function DashboardPage() {
                       className="shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)] rounded-xl bg-white border border-solid border-slate-200/80 p-5 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col gap-3"
                     >
                       <div className="flex justify-between items-start gap-2">
-                        <h4 className="m-0 text-lg font-bold text-slate-900 tracking-tight">{meeting.title}</h4>
-                        <span className="text-xs bg-slate-100 border border-solid border-slate-200 text-slate-700 px-2.5 py-1 rounded-md font-semibold font-mono">
+                        <h4 className="m-0 text-lg font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">{meeting.title}</h4>
+                        <span className="text-xs bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 text-[#097C87] px-2.5 py-1 rounded-md font-bold font-mono">
                           {meeting.time}
                         </span>
                       </div>
@@ -500,7 +501,7 @@ export default function DashboardPage() {
                 <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">
                   {isManager ? "Active Group Workloads" : "Your Assigned Workloads"}
                 </h3>
-                <a href="/tasks" className="text-sm text-slate-600 font-semibold hover:text-slate-950 transition-colors">
+                <a href="/tasks" className="text-sm text-[#097C87] font-bold hover:text-[#23CED9] transition-colors no-underline">
                   {isManager ? "Manage Tasks &rarr;" : "View Task List &rarr;"}
                 </a>
               </div>
@@ -517,14 +518,14 @@ export default function DashboardPage() {
                       className="shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)] rounded-xl bg-white border border-solid border-slate-200/80 p-5 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col gap-3"
                     >
                       <div className="flex justify-between items-start gap-2">
-                        <h4 className="m-0 text-lg font-bold text-slate-900 tracking-tight">{task.title}</h4>
+                        <h4 className="m-0 text-lg font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">{task.title}</h4>
                         <span
                           className={`text-xs px-2.5 py-1 rounded-md font-semibold border border-solid ${
                             task.priority === "High"
                               ? "bg-red-50 text-red-650 border-red-100"
                               : task.priority === "Medium"
                               ? "bg-orange-50 text-orange-600 border-orange-100"
-                              : "bg-slate-50 text-slate-650 border-slate-200"
+                              : "bg-[#A1CCA6]/15 text-[#097C87] border-[#A1CCA6]/30"
                           }`}
                         >
                           {task.priority}
@@ -536,7 +537,7 @@ export default function DashboardPage() {
                       <div className="text-xs text-slate-400 font-['DM_Sans'] border-t border-solid border-slate-100 pt-2 flex justify-between items-center">
                         <span>👤 {task.assignedMember}</span>
                         <span className={`font-semibold px-2 py-0.5 rounded text-xs ${
-                          task.status === "In Progress" ? "bg-slate-100 text-slate-700 border border-solid border-slate-200" : "bg-slate-50 text-slate-500 border border-solid border-slate-100"
+                          task.status === "In Progress" ? "bg-[#23CED9]/10 text-[#097C87] border border-solid border-[#23CED9]/20" : "bg-slate-50 text-slate-500 border border-solid border-slate-150"
                         }`}>{task.status}</span>
                       </div>
                     </div>

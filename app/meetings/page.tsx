@@ -260,7 +260,7 @@ export default function MeetingsPage() {
     return (
       <div className="w-full min-h-screen flex flex-col items-center justify-center bg-slate-50 font-['Space_Grotesk'] text-slate-800">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-600 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-slate-200 border-t-[#097C87] rounded-full animate-spin"></div>
           <span className="text-xl font-medium tracking-wide">Loading workspace meetings...</span>
         </div>
       </div>
@@ -277,7 +277,7 @@ export default function MeetingsPage() {
         {/* Active Group Sub-header Banner */}
         <div className="w-full flex justify-between items-center bg-white border border-solid border-slate-200 p-5 rounded-2xl shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)]">
           <div className="text-base text-slate-500 font-['DM_Sans']">
-            Workspace: 🏢 <strong className="text-slate-800 text-lg">{activeGroup.name}</strong> (Code: <span className="font-mono bg-slate-100 border border-solid border-slate-200 px-2.5 py-0.5 rounded text-slate-700 font-semibold">{activeGroup.code}</span>)
+            Workspace: 🏢 <strong className="text-slate-800 text-lg font-['Space_Grotesk']">{activeGroup.name}</strong> (Code: <span className="font-mono bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 px-2.5 py-0.5 rounded text-[#097C87] font-bold">{activeGroup.code}</span>)
           </div>
           <a href="/dashboard" className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors no-underline">
             Switch Workspace Group
@@ -299,7 +299,7 @@ export default function MeetingsPage() {
         <div className="w-full flex items-start gap-12 mq1125:flex-col">
           {/* Scheduling Form Section (Only for Manager) */}
           {isManager ? (
-            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-6 mq1125:w-full">
+            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-6 mq1125:w-full">
               <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
                 {editingId ? "Update Scheduled Sync" : "Schedule Team Sync"}
               </h2>
@@ -324,7 +324,7 @@ export default function MeetingsPage() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Weekly Status Update"
-                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition"
                   />
                 </div>
 
@@ -336,7 +336,7 @@ export default function MeetingsPage() {
                       required
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-400 transition cursor-pointer"
+                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#097C87] transition cursor-pointer"
                     />
                   </div>
                   <div className="flex flex-col gap-2 flex-1">
@@ -346,7 +346,7 @@ export default function MeetingsPage() {
                       required
                       value={time}
                       onChange={(e) => setTime(e.target.value)}
-                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-400 transition cursor-pointer"
+                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#097C87] transition cursor-pointer"
                     />
                   </div>
                 </div>
@@ -359,7 +359,7 @@ export default function MeetingsPage() {
                     value={participants}
                     onChange={(e) => setParticipants(e.target.value)}
                     placeholder="comma separated names"
-                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition"
                   />
                 </div>
 
@@ -371,7 +371,7 @@ export default function MeetingsPage() {
                     value={agenda}
                     onChange={(e) => setAgenda(e.target.value)}
                     placeholder="Describe target achievements for this sync..."
-                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition resize-none"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition resize-none"
                   />
                 </div>
 
@@ -386,7 +386,7 @@ export default function MeetingsPage() {
                         setGenerateMeet(e.target.checked);
                         if (!e.target.checked) setCustomMeetLink("");
                       }}
-                      className="w-5 h-5 accent-slate-700 cursor-pointer"
+                      className="w-5 h-5 accent-[#097C87] cursor-pointer"
                     />
                     <label htmlFor="generateMeet" className="text-sm font-bold text-slate-800 cursor-pointer select-none">
                       🎥 Google Meet Integration
@@ -403,7 +403,7 @@ export default function MeetingsPage() {
                         value={customMeetLink}
                         onChange={(e) => setCustomMeetLink(e.target.value)}
                         placeholder="https://meet.google.com/xxx-yyyy-zzz"
-                        className="w-full bg-white border border-solid border-slate-200 rounded-xl py-2 px-3 text-sm font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-450 transition"
+                        className="w-full bg-white border border-solid border-slate-200 rounded-xl py-2 px-3 text-sm font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#097C87] transition"
                       />
                     </div>
                   )}
@@ -416,7 +416,7 @@ export default function MeetingsPage() {
                 <div className="flex gap-3 mt-2">
                   <button
                     type="submit"
-                    className="cursor-pointer border-none py-3.5 px-6 bg-slate-700 hover:bg-slate-800 text-white font-semibold rounded-xl flex-1 text-base shadow-sm hover:shadow transition-all duration-200"
+                    className="cursor-pointer border-none py-3.5 px-6 bg-[#097C87] hover:bg-[#23CED9] text-white font-bold rounded-xl flex-1 text-base shadow-sm hover:shadow transition-all duration-200"
                   >
                     {editingId ? "Update Sync" : "Confirm Schedule"}
                   </button>
@@ -447,7 +447,7 @@ export default function MeetingsPage() {
             </div>
           ) : (
             /* Non-manager placeholder */
-            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-4 mq1125:w-full">
+            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-4 mq1125:w-full">
               <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">Schedule Team Sync</h2>
               <div className="bg-slate-50 text-slate-700 p-6 rounded-xl border border-solid border-slate-200 flex flex-col gap-3">
                 <span className="text-base font-bold">📋 View Only Access</span>
@@ -484,11 +484,11 @@ export default function MeetingsPage() {
                 {meetings.map((meeting) => (
                   <div
                     key={meeting.id}
-                    className="w-full shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-4 relative"
+                    className="w-full shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-4 relative"
                   >
                     <div className="flex justify-between items-start gap-4">
                       <div className="flex flex-col gap-1">
-                        <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">
+                        <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">
                           {meeting.title}
                         </h3>
                         <div className="text-sm text-slate-500 font-['DM_Sans'] mt-1">
@@ -500,7 +500,7 @@ export default function MeetingsPage() {
                       <span
                         className={`text-xs px-3 py-1.5 rounded-lg font-bold border border-solid ${
                           meeting.status === "Upcoming"
-                            ? "bg-slate-600 text-white border-slate-600"
+                            ? "bg-[#097C87] text-white border-[#097C87]"
                             : meeting.status === "Completed"
                             ? "bg-slate-800 text-white border-slate-800"
                             : "bg-red-50 text-red-700 border-red-150"
@@ -537,7 +537,7 @@ export default function MeetingsPage() {
                               href={meeting.meetLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="cursor-pointer bg-slate-700 text-white hover:bg-slate-850 font-semibold text-xs px-4 py-2 rounded-lg no-underline hover:shadow transition-all duration-200 shrink-0"
+                              className="cursor-pointer bg-[#097C87] text-white hover:bg-[#23CED9] font-bold text-xs px-4 py-2 rounded-lg no-underline hover:shadow transition-all duration-200 shrink-0"
                             >
                               Join Call
                             </a>
@@ -550,7 +550,7 @@ export default function MeetingsPage() {
                             {isManager && (
                               <button
                                 onClick={() => handleAddMeetLink(meeting.id)}
-                                className="cursor-pointer bg-slate-100 border border-solid border-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-200 transition duration-200"
+                                className="cursor-pointer bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 text-[#097C87] px-3.5 py-1.5 rounded-lg text-xs font-bold hover:bg-[#097C87] hover:text-white transition duration-200"
                               >
                                 Host a Meet
                               </button>
@@ -566,19 +566,19 @@ export default function MeetingsPage() {
                         <>
                           <button
                             onClick={() => handleComplete(meeting.id)}
-                            className="cursor-pointer bg-slate-700 border-none px-4 py-2 rounded-lg text-xs font-semibold text-white hover:bg-slate-800 transition duration-200"
+                            className="cursor-pointer bg-slate-800 border-none px-4 py-2 rounded-lg text-xs font-bold text-white hover:bg-slate-900 transition duration-200"
                           >
                             Mark Completed
                           </button>
                           <button
                             onClick={() => handleEdit(meeting)}
-                            className="cursor-pointer bg-white border border-solid border-slate-200 px-4 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition duration-200"
+                            className="cursor-pointer bg-white border border-solid border-slate-200 px-4 py-2 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 transition duration-200"
                           >
                             Edit Details
                           </button>
                           <button
                             onClick={() => handleCancel(meeting.id)}
-                            className="cursor-pointer bg-red-50 border border-solid border-red-150 px-4 py-2 rounded-lg text-xs font-semibold text-red-700 hover:bg-red-100 transition duration-200"
+                            className="cursor-pointer bg-red-50 border border-solid border-red-150 px-4 py-2 rounded-lg text-xs font-bold text-red-700 hover:bg-red-100 transition duration-200"
                           >
                             Cancel
                           </button>

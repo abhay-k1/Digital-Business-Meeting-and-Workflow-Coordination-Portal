@@ -53,13 +53,13 @@ const FrameComponent: NextPage<FrameComponentType> = ({ className = "" }) => {
           width={380}
           height={102}
           sizes="100vw"
-          alt=""
+          alt="Business Coordination Portal logo"
           src="/image-1@2x.png"
           onClick={() => window.location.href = "/"}
         />
         <nav className="m-0 h-[45px] overflow-hidden shrink-0 flex items-center justify-center py-3 px-[15px] box-border gap-[35px] text-left text-[20px] text-grays-black font-['Inria_Serif'] mq1125:hidden mq800:gap-[20px]">
           <h3
-            className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#475569] transition duration-150"
+            className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#097C87] transition duration-150"
             onClick={onHomeTextClick}
           >
             Home
@@ -67,19 +67,19 @@ const FrameComponent: NextPage<FrameComponentType> = ({ className = "" }) => {
           {isLoggedIn ? (
             <>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#475569] transition duration-150"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#097C87] transition duration-150"
                 onClick={() => window.location.href = "/dashboard"}
               >
                 Dashboard
               </h3>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#475569] transition duration-150"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#097C87] transition duration-150"
                 onClick={() => window.location.href = "/meetings"}
               >
                 Meetings
               </h3>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#475569] transition duration-150"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#097C87] transition duration-150"
                 onClick={() => window.location.href = "/tasks"}
               >
                 Tasks
@@ -97,19 +97,19 @@ const FrameComponent: NextPage<FrameComponentType> = ({ className = "" }) => {
           ) : (
             <>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#475569] transition duration-150"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#097C87] transition duration-150"
                 onClick={onFeaturesTextClick}
               >
                 Features
               </h3>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#475569] transition duration-150"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#097C87] transition duration-150"
                 onClick={onAboutUsTextClick}
               >
                 About Us
               </h3>
               <h3
-                className="m-0 relative text-base font-bold font-['Space_Grotesk'] inline-block cursor-pointer text-white hover:text-white bg-dark hover:bg-slate-800 px-5 py-2.5 rounded-xl border-none shadow-sm transition duration-200"
+                className="m-0 relative text-base font-bold font-['Space_Grotesk'] inline-block cursor-pointer text-white bg-[#097C87] hover:bg-[#23CED9] px-5 py-2.5 rounded-xl border-none shadow-sm transition duration-200"
                 onClick={() => window.location.href = "/login"}
               >
                 Login

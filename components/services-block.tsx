@@ -4,7 +4,6 @@ import { useCallback } from "react";
 import Image from "next/image";
 import Button from "./button";
 import Card from "./card";
-
 import { getSession } from "../app/lib/auth";
 
 export type ServicesBlockType = {
@@ -23,7 +22,8 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
   }, []);
 
   const onCardContainerClick2 = useCallback(() => {
-    // Please sync "Team Collaboration" to the project
+    const session = getSession();
+    window.location.href = session ? "/dashboard" : "/login";
   }, []);
 
   const onCardContainerClick3 = useCallback(() => {
@@ -31,46 +31,54 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
     window.location.href = session ? "/dashboard" : "/login";
   }, []);
 
+  const onBookSyncClick = useCallback(() => {
+    const session = getSession();
+    window.location.href = session ? "/meetings" : "/login";
+  }, []);
+
   return (
     <section
-      className={`ml-[-28px] mb-[93px] w-[1440px] flex flex-col items-start relative gap-10 max-w-full z-[1] shrink-0 mq800:gap-5 ${className}`}
+      className={`w-full max-w-7xl mx-auto px-16 box-border flex flex-col items-start gap-12 shrink-0 mq1125:px-8 mq450:gap-6 pb-20 bg-white ${className}`}
     >
-      <div className="w-[1440px] flex items-start max-w-full shrink-0">
-        <div className="w-[1440px] flex items-center py-0 px-[100px] box-border max-w-full mq800:pl-[25px] mq800:pr-[25px] mq800:box-border mq1350:pl-[50px] mq1350:pr-[50px] mq1350:box-border">
-          <section className="h-[347px] w-[1240px] rounded-[45px] bg-grey flex items-center py-0 px-[60px] box-border text-left text-3xl text-grays-black font-['Space_Grotesk'] mq450:gap-[69px] mq800:gap-[137px] mq800:pl-[30px] mq800:pr-[30px] mq800:box-border">
-            <div className="flex flex-col items-start py-5 px-0 gap-[26px]">
-              <h2 className="m-0 w-[500px] relative text-[length:inherit] font-medium font-[inherit] inline-block mq450:text-lg mq800:text-2xl">
+      {/* Banner CTA section - Redesigned into responsive side-by-side flex layout */}
+      <div className="w-full flex items-start max-w-full shrink-0">
+        <div className="w-full flex items-center box-border max-w-full">
+          <section className="w-full rounded-[28px] bg-slate-50 border border-solid border-slate-200/80 flex items-center justify-between p-12 box-border text-left text-grays-black font-['Space_Grotesk'] max-w-full flex-wrap gap-8 mq800:p-8">
+            <div className="flex flex-col items-start gap-5 max-w-[550px] flex-1 min-w-[280px]">
+              <h2 className="m-0 text-3xl font-bold tracking-tight text-slate-900 mq450:text-xl mq800:text-2xl">
                 Let’s make things happen
               </h2>
-              <div className="w-[500px] h-[115px] relative text-xl inline-block mq450:text-base">
+              <div className="text-lg text-slate-500 font-['DM_Sans'] leading-relaxed">
                 Ready to streamline your business operations? Bring your team
                 together, automate your meeting workflows, and eliminate
                 coordination bottlenecks starting today.
               </div>
               <Button
-                property1="Button primary"
                 label="Book your meeting schedule"
+                onClick={onBookSyncClick}
+              />
+            </div>
+            
+            <div className="w-[380px] h-[280px] flex items-center justify-center relative flex-1 min-w-[260px] max-w-[400px] shrink-0">
+              <Image
+                className="w-full h-full object-contain"
+                width={359}
+                height={280}
+                alt="Productive team coordination"
+                src="/Illustration3.svg"
               />
             </div>
           </section>
-          <div className="h-[394px] w-[494px] relative z-[1] ml-[-715px]">
-            <Image
-              className="absolute top-[0px] left-[0px] w-full h-[394.3px] object-contain"
-              width={359}
-              height={394.3}
-              sizes="100vw"
-              alt=""
-              src="/Illustration3.svg"
-            />
-          </div>
         </div>
       </div>
-      <section className="flex items-start py-0 px-[100px] box-border gap-10 max-w-full z-[1] shrink-0 mq450:pl-5 mq450:pr-5 mq450:box-border mq800:gap-5 mq800:pl-[50px] mq800:pr-[50px] mq800:box-border mq1350:flex-wrap">
+
+      {/* Grid container for modern service cards */}
+      <div className="w-full grid grid-cols-2 gap-8 max-w-full z-[1] shrink-0 mq1125:grid-cols-1">
         <Card
           onCardContainerClick={onCardContainerClick}
           illustration="/Illustration4@2x.png"
           property1="Green"
-          label="Meeting "
+          label="Meeting Coordination"
           showLabel
           labelVisible
           labelWidth="unset"
@@ -80,14 +88,14 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
         />
         <Card
           onCardContainerClick={onCardContainerClick1}
-          cardBackgroundColor="#eff6ff"
+          cardBackgroundColor="#f0fdfa"
           cardPadding="48px 50px"
           cardGap="20px"
           headingAndLinkJustifyContent="unset"
           illustration="/Illustration1@2x.png"
           illustrationIconHeight="147.6px"
           property1="White"
-          label="Task "
+          label="Task Allocation"
           showLabel
           labelVisible
           labelWidth="unset"
@@ -95,8 +103,6 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
           property11="Black"
           icon="/Icon.svg"
         />
-      </section>
-      <section className="flex items-start py-0 px-[100px] box-border gap-10 max-w-full z-[2] shrink-0 mq450:pl-5 mq450:pr-5 mq450:box-border mq800:gap-5 mq800:pl-[50px] mq800:pr-[50px] mq800:box-border mq1350:flex-wrap">
         <Card
           onCardContainerClick={onCardContainerClick2}
           cardBackgroundColor="#f8fafc"
@@ -106,7 +112,7 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
           illustration="/Illustration2@2x.png"
           illustrationIconHeight="210px"
           property1="White"
-          label="Team"
+          label="Team Workspace"
           showLabel
           labelVisible
           labelWidth="unset"
@@ -116,14 +122,14 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
         />
         <Card
           onCardContainerClick={onCardContainerClick3}
-          cardBackgroundColor="#f8fafc"
+          cardBackgroundColor="#f0fdfa"
           cardPadding="48px 49px"
           cardGap="11px"
           headingAndLinkJustifyContent="center"
           illustration="/Illustration5@2x.png"
           illustrationIconHeight="195.9px"
           property1="Green"
-          label={`Dashboard & `}
+          label="Metrics Dashboard"
           showLabel
           labelVisible
           labelWidth="unset"
@@ -131,7 +137,7 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
           property11="Black"
           icon="/Icon.svg"
         />
-      </section>
+      </div>
     </section>
   );
 };
