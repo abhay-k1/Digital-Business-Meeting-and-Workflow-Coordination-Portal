@@ -41,23 +41,23 @@ const Card1: NextPage<Card1Type> = ({
 
   return (
     <section
-      className={`self-stretch flex-1 shadow-[0px_5px_0px_#191a23] rounded-[45px] bg-green border-dark border-solid border-[1px] box-border overflow-hidden flex flex-col items-start pt-[39px] pb-[33px] pl-[60px] pr-[53px] gap-[30px] max-w-full text-left text-6xl text-grays-black font-['Space_Grotesk'] mq800:gap-[15px] mq1350:pl-[30px] mq1350:pr-[26px] mq1350:box-border ${className}`}
+      className={`self-stretch flex-1 shadow-[0_8px_30px_rgb(15,23,42,0.02)] border-slate-200/60 border-solid border rounded-[24px] box-border overflow-hidden flex flex-col items-start pt-[39px] pb-[33px] pl-[60px] pr-[53px] gap-[30px] max-w-full text-left text-6xl text-slate-800 font-['Space_Grotesk'] hover:shadow-[0_8px_30px_rgba(71,85,105,0.06)] hover:-translate-y-0.5 transition-all duration-300 mq800:gap-[15px] mq1350:pl-[30px] mq1350:pr-[26px] mq1350:box-border ${className}`}
       style={card1Style}
     >
-      <div className="w-[1117px] overflow-hidden flex items-center justify-between gap-5 max-w-full">
+      <div className="w-full overflow-hidden flex items-center justify-between gap-5 max-w-full">
         <div className="flex items-center gap-[25px] max-w-full mq800:flex-wrap">
-          <h1 className="m-0 relative text-[length:inherit] font-medium font-[inherit] mq450:text-4xl mq800:text-5xl">
+          <h1 className="m-0 relative text-[length:inherit] font-extrabold text-[#475569] mq450:text-4xl mq800:text-5xl">
             {labelSpacer}
           </h1>
-          <h2 className="m-0 w-[612px] relative text-3xl font-medium font-[inherit] inline-block shrink-0 max-w-full mq450:text-lg mq800:text-2xl">
+          <h2 className="m-0 w-[612px] relative text-2xl font-bold text-slate-800 inline-block shrink-0 max-w-full mq450:text-lg mq800:text-2xl">
             {scheduleMeetings}
           </h2>
         </div>
         <PlusIcon property1={property1} />
       </div>
-      <div className="w-[1115px] h-px relative border-grays-black border-solid border-t-[1px] box-border" />
+      <div className="w-full h-px relative border-slate-200/40 border-solid border-t-[1px] box-border" />
       <div
-        className="w-[1119px] relative text-2xl inline-block mq450:text-[19px]"
+        className="w-full relative text-lg text-slate-600 font-['DM_Sans'] leading-7 max-w-full"
         style={createAndOrganizeStyle}
       >
         {createAndOrganizeMeetingsWith}

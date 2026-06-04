@@ -120,16 +120,16 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
       <button
         key={`day-${d}`}
         onClick={() => handleDayClick(d)}
-        className={`h-12 w-full rounded-[10px] flex flex-col items-center justify-between py-1 relative border border-solid transition duration-200 cursor-pointer ${
+        className={`h-11 w-11 mx-auto rounded-full flex flex-col items-center justify-center relative border border-solid transition duration-200 cursor-pointer ${
           isSelected
-            ? "bg-[#b9ff66] border-[#191a23] text-grays-black font-extrabold shadow-[0px_2px_0px_#191a23]"
-            : "bg-[#fff] border-[#eee] text-grays-black hover:bg-grey"
+            ? "bg-[#475569] border-[#475569] text-white font-bold shadow-sm"
+            : "bg-white border-transparent text-[#0f172a] hover:bg-slate-100"
         }`}
       >
-        <span className="text-sm font-medium">{d}</span>
-        <div className="flex gap-1 mb-1">
-          {hasMeeting && <span className="h-1.5 w-1.5 rounded-full bg-dark block"></span>}
-          {hasTask && <span className="h-1.5 w-1.5 rounded-full bg-green block"></span>}
+        <span className="text-xs font-semibold">{d}</span>
+        <div className="flex gap-0.5 mt-0.5 justify-center">
+          {hasMeeting && <span className="h-1 w-1 rounded-full bg-slate-400 block"></span>}
+          {hasTask && <span className="h-1 w-1 rounded-full bg-slate-300 block"></span>}
         </div>
       </button>
     );
@@ -172,19 +172,12 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
         {/* Header Block */}
         <div className="w-full flex justify-between items-center mb-10 flex-wrap gap-4">
           <Heading
-            property1="White"
             label={`Your Insights &`}
-            labelWidth="unset"
-            labelHeight="unset"
-            label1=" Remainder"
+            label1="Productivity"
             showLabel
-            labelWidth1="unset"
-            labelHeight1="unset"
-            label2="Label"
-            labelVisible
           />
           {!session && (
-            <span className="bg-[#191a23] text-[#b9ff66] px-4 py-2 rounded-[12px] font-bold text-sm font-['DM_Sans'] border border-solid border-dark shadow-[0px_2px_0px_#000]">
+            <span className="bg-slate-100 text-slate-700 px-4 py-2 rounded-xl font-bold text-sm font-['DM_Sans'] border border-solid border-slate-200/50 shadow-sm">
               🔒 Login to unlock dynamic metrics
             </span>
           )}
@@ -194,7 +187,7 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
         <div className="w-full grid grid-cols-2 gap-12 max-w-full shrink-0 items-start mq1125:grid-cols-1">
           
           {/* COLUMN 1: Calendar Widget */}
-          <div className="flex flex-col gap-6 w-full bg-white p-8 rounded-[30px] border border-solid border-dark shadow-[0px_4px_0px_#191a23]">
+          <div className="flex flex-col gap-6 w-full bg-white p-8 rounded-[24px] border border-solid border-slate-200/50 shadow-[0_8px_30px_rgb(15,23,42,0.03)]">
             <div className="flex justify-between items-center border-b border-solid border-[#eee] pb-4">
               <h3 className="m-0 text-2xl font-bold text-grays-black font-['Space_Grotesk']">
                 📅 {monthNames[month]} {year}
@@ -202,13 +195,13 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
               <div className="flex gap-2">
                 <button
                   onClick={prevMonth}
-                  className="cursor-pointer bg-grey hover:bg-[#b9ff66] border border-solid border-[#ddd] hover:border-dark rounded-full h-8 w-8 flex items-center justify-center font-bold text-grays-black transition duration-200"
+                  className="cursor-pointer bg-slate-100 hover:bg-slate-200 border border-solid border-slate-200/60 rounded-full h-8 w-8 flex items-center justify-center font-bold text-slate-700 transition duration-200"
                 >
                   &lt;
                 </button>
                 <button
                   onClick={nextMonth}
-                  className="cursor-pointer bg-grey hover:bg-[#b9ff66] border border-solid border-[#ddd] hover:border-dark rounded-full h-8 w-8 flex items-center justify-center font-bold text-grays-black transition duration-200"
+                  className="cursor-pointer bg-slate-100 hover:bg-slate-200 border border-solid border-slate-200/60 rounded-full h-8 w-8 flex items-center justify-center font-bold text-slate-700 transition duration-200"
                 >
                   &gt;
                 </button>
@@ -246,10 +239,10 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
                   {meetingsForSelectedDay.map((meet) => (
                     <div
                       key={meet.id}
-                      className="bg-[#b9ff66]/10 border border-solid border-[#b9ff66]/40 p-3 rounded-[10px] text-xs font-bold text-grays-black flex justify-between items-center"
+                      className="bg-slate-50 border border-solid border-slate-200/60 p-3 rounded-xl text-xs font-bold text-grays-black flex justify-between items-center"
                     >
                       <span>🎥 Meeting: {meet.title} ({meet.time})</span>
-                      <a href="/meetings" className="text-[10px] text-[#191a23] underline font-extrabold hover:text-black">
+                      <a href="/meetings" className="text-[10px] text-slate-500 underline font-bold hover:text-slate-800">
                         Details
                       </a>
                     </div>
@@ -257,10 +250,10 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
                   {tasksForSelectedDay.map((task) => (
                     <div
                       key={task.id}
-                      className="bg-grey border border-solid border-[#ddd] p-3 rounded-[10px] text-xs font-bold text-grays-black flex justify-between items-center"
+                      className="bg-slate-50 border border-solid border-slate-200/60 p-3 rounded-xl text-xs font-bold text-grays-black flex justify-between items-center"
                     >
                       <span>📝 Task: {task.title} (Priority: {task.priority})</span>
-                      <a href="/tasks" className="text-[10px] text-[#191a23] underline font-extrabold hover:text-black">
+                      <a href="/tasks" className="text-[10px] text-slate-500 underline font-bold hover:text-slate-800">
                         Update
                       </a>
                     </div>
@@ -274,12 +267,12 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
           <div className="flex flex-col gap-8 w-full">
             
             {/* GRAPH 1: Weekly Task Graph */}
-            <div className="bg-white p-6 rounded-[30px] border border-solid border-dark shadow-[0px_4px_0px_#191a23] flex flex-col gap-4">
+            <div className="bg-white p-6 rounded-[24px] border border-solid border-slate-200/50 shadow-[0_8px_30px_rgb(15,23,42,0.03)] flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <h3 className="m-0 text-xl font-bold text-grays-black font-['Space_Grotesk']">
                   📊 Weekly Productivity Overview
                 </h3>
-                <span className="text-xs bg-[#b9ff66] text-grays-black px-2.5 py-1 rounded-[8px] font-bold">
+                <span className="text-xs bg-slate-100 border border-solid border-slate-200 text-slate-600 px-2.5 py-1 rounded-[8px] font-bold">
                   Completed Syncs & Tasks
                 </span>
               </div>
@@ -288,13 +281,12 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
               <div className="w-full h-[180px] flex items-end justify-between px-2 pt-4">
                 {activeWeeklyData.map((val, idx) => {
                   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-                  // Cap height ratio at 120px max
                   const barHeight = Math.max(10, Math.min(120, val * 10));
                   return (
                     <div key={`week-${idx}`} className="flex flex-col items-center gap-2 flex-1">
                       <div className="text-xs font-extrabold text-grays-black">{val}</div>
                       <div
-                        className="w-8 rounded-t-[6px] bg-[#191a23] hover:bg-[#b9ff66] border border-solid border-dark transition duration-300 shadow-[0px_2px_0px_#000]"
+                        className="w-8 rounded-t-[6px] bg-slate-700 hover:bg-[#475569] transition duration-300"
                         style={{ height: `${barHeight}px` }}
                       ></div>
                       <div className="text-xs font-bold text-[#888] font-['Space_Grotesk']">{days[idx]}</div>
@@ -305,12 +297,12 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
             </div>
 
             {/* GRAPH 2: Monthly Wave Graph */}
-            <div className="bg-white p-6 rounded-[30px] border border-solid border-dark shadow-[0px_4px_0px_#191a23] flex flex-col gap-4">
+            <div className="bg-white p-6 rounded-[24px] border border-solid border-slate-200/50 shadow-[0_8px_30px_rgb(15,23,42,0.03)] flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <h3 className="m-0 text-xl font-bold text-grays-black font-['Space_Grotesk']">
                   📈 Monthly Completion Ratio (%)
                 </h3>
-                <span className="text-xs bg-grey text-[#555] border border-solid border-[#ddd] px-2.5 py-1 rounded-[8px] font-bold">
+                <span className="text-xs bg-grey text-[#555] border border-solid border-[#eee] px-2.5 py-1 rounded-[8px] font-bold">
                   Quarterly Trend
                 </span>
               </div>
@@ -321,8 +313,8 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
                   {/* Wave Fill Gradient */}
                   <defs>
                     <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#b9ff66" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#b9ff66" stopOpacity="0.0" />
+                      <stop offset="0%" stopColor="#475569" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#475569" stopOpacity="0.0" />
                     </linearGradient>
                   </defs>
 
@@ -347,7 +339,7 @@ const FrameComponent1: NextPage<FrameComponent1Type> = ({ className = "" }) => {
                         L 300 ${100 - (activeMonthlyData[10] / 100 * 80)} 
                         L 330 ${100 - (activeMonthlyData[11] / 100 * 80)}`}
                     fill="none"
-                    stroke="#191a23"
+                    stroke="#475569"
                     strokeWidth="3.5"
                     strokeLinecap="round"
                   />

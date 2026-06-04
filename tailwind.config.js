@@ -4,11 +4,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "grays-black": "#000",
-        green: "#2563eb", // Corporate blue (replaces lime green)
-        grey: "#f8fafc",  // Light slate neutral (replaces warm gray #f3f3f3)
-        dark: "#0f172a",  // Deep slate gray (replaces dark #191a23)
-        black: "#0f172a", // Map black to deep slate gray for softer professional look
+        "grays-black": "#0f172a", // Slate-900 (replaces pure black)
+        green: "#475569", // Slate-600 (replaces bright blue/lime green)
+        grey: "#f8fafc",  // Light slate neutral (replaces warm gray)
+        dark: "#334155",  // Charcoal Slate-700 (replaces pitch black/navy)
+        black: "#0f172a", // Map black to Slate-900
       },
     },
     screens: {},

@@ -31,13 +31,13 @@ const Button: NextPage<ButtonType> = ({
 
   return (
     <button
-      className={`cursor-pointer [border:none] py-5 px-[35px] bg-dark rounded-[14px] flex items-start ${getButtonStyle(variantKey)} ${className}`}
+      className={`cursor-pointer border-none py-3 px-6 bg-dark hover:bg-slate-800 text-white font-semibold rounded-xl flex items-center justify-center transition duration-200 shadow-sm ${getButtonStyle(variantKey)} ${className}`}
     >
-      <div
-        className={`relative text-xl leading-7 font-['Space_Grotesk'] text-[#fff] text-center ${getLabelText28Style(variantKey)}`}
+      <span
+        className={`relative text-base font-semibold font-['Space_Grotesk'] text-[#fff] text-center ${getLabelText28Style(variantKey)}`}
       >
         {label}
-      </div>
+      </span>
     </button>
   );
 };

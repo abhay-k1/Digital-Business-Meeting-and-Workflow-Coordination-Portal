@@ -258,8 +258,11 @@ export default function MeetingsPage() {
 
   if (loading || !session || !activeGroup) {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-white font-['Space_Grotesk'] text-2xl font-bold">
-        Loading workspace meetings...
+      <div className="w-full min-h-screen flex flex-col items-center justify-center bg-slate-50 font-['Space_Grotesk'] text-slate-800">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-600 rounded-full animate-spin"></div>
+          <span className="text-xl font-medium tracking-wide">Loading workspace meetings...</span>
+        </div>
       </div>
     );
   }
@@ -267,16 +270,16 @@ export default function MeetingsPage() {
   const isManager = activeGroup.managerId === session.id;
 
   return (
-    <div className="w-full min-h-screen relative bg-[#fff] overflow-hidden flex flex-col items-start pt-[61px] px-0 pb-0 box-border gap-20 leading-[normal] tracking-[normal] text-left font-['Space_Grotesk']">
+    <div className="w-full min-h-screen relative bg-slate-50/50 overflow-hidden flex flex-col items-start pt-[61px] px-0 pb-0 box-border gap-20 leading-[normal] tracking-[normal] text-left font-['Space_Grotesk']">
       <FrameComponent />
 
       <main className="self-stretch flex flex-col gap-16 px-16 box-border max-w-full mq800:px-6">
         {/* Active Group Sub-header Banner */}
-        <div className="w-full flex justify-between items-center bg-[#f8fafc] border border-solid border-slate-200 p-5 rounded-[20px] shadow-[0px_2px_0px_#0f172a]">
-          <div className="text-base text-[#555] font-['DM_Sans']">
-            Workspace: 🏢 <strong className="text-grays-black text-lg">{activeGroup.name}</strong> (Code: <span className="font-mono bg-slate-200 px-2 py-0.5 rounded font-bold">{activeGroup.code}</span>)
+        <div className="w-full flex justify-between items-center bg-white border border-solid border-slate-200 p-5 rounded-2xl shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)]">
+          <div className="text-base text-slate-500 font-['DM_Sans']">
+            Workspace: 🏢 <strong className="text-slate-800 text-lg">{activeGroup.name}</strong> (Code: <span className="font-mono bg-slate-100 border border-solid border-slate-200 px-2.5 py-0.5 rounded text-slate-700 font-semibold">{activeGroup.code}</span>)
           </div>
-          <a href="/dashboard" className="text-sm font-bold text-[#2563eb] underline hover:text-blue-700">
+          <a href="/dashboard" className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors no-underline">
             Switch Workspace Group
           </a>
         </div>
@@ -284,18 +287,11 @@ export default function MeetingsPage() {
         {/* Title Section */}
         <div className="flex items-center gap-10 max-w-full mq800:flex-wrap">
           <Heading
-            property1="Green"
             label="Meeting"
-            labelWidth="unset"
-            labelHeight="unset"
             label1="Scheduling"
             showLabel={true}
-            labelWidth1="unset"
-            labelHeight1="unset"
-            label2="Label"
-            labelVisible={false}
           />
-          <b className="w-[450px] relative inline-block text-xl font-['DM_Sans'] text-[#555] font-normal mq450:text-base">
+          <b className="w-[450px] relative inline-block text-lg font-['DM_Sans'] text-slate-500 font-normal leading-relaxed mq450:text-base">
             Create, manage, and coordinate all team syncs for the {activeGroup.name} workspace.
           </b>
         </div>
@@ -303,84 +299,84 @@ export default function MeetingsPage() {
         <div className="w-full flex items-start gap-12 mq1125:flex-col">
           {/* Scheduling Form Section (Only for Manager) */}
           {isManager ? (
-            <div className="w-[45%] shadow-[0px_5px_0px_#0f172a] rounded-[45px] bg-[#f8fafc] border-dark border-solid border-[1px] box-border p-10 flex flex-col gap-6 mq1125:w-full">
-              <h2 className="m-0 text-3xl font-medium text-grays-black">
+            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-6 mq1125:w-full">
+              <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
                 {editingId ? "Update Scheduled Sync" : "Schedule Team Sync"}
               </h2>
 
               {error && (
-                <div className="bg-red-50 text-red-600 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
+                <div className="bg-red-50 text-red-700 px-5 py-3 rounded-xl border border-solid border-red-150 text-sm font-medium">
                   {error}
                 </div>
               )}
               {successMsg && (
-                <div className="bg-blue-50 text-blue-700 px-5 py-3 rounded-[10px] border border-solid border-blue-200 text-sm font-medium">
+                <div className="bg-slate-50 text-slate-700 px-5 py-3 rounded-xl border border-solid border-slate-200 text-sm font-medium">
                   {successMsg}
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <div className="flex flex-col gap-2">
-                  <label className="text-base font-medium text-grays-black">Meeting Title</label>
+                  <label className="text-sm font-semibold text-slate-750">Meeting Title</label>
                   <input
                     type="text"
                     required
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Weekly Status Update"
-                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition"
                   />
                 </div>
 
                 <div className="flex gap-4 mq450:flex-col">
                   <div className="flex flex-col gap-2 flex-1">
-                    <label className="text-base font-medium text-grays-black">Date</label>
+                    <label className="text-sm font-semibold text-slate-750">Date</label>
                     <input
                       type="date"
                       required
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
+                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-400 transition cursor-pointer"
                     />
                   </div>
                   <div className="flex flex-col gap-2 flex-1">
-                    <label className="text-base font-medium text-grays-black">Time</label>
+                    <label className="text-sm font-semibold text-slate-750">Time</label>
                     <input
                       type="time"
                       required
                       value={time}
                       onChange={(e) => setTime(e.target.value)}
-                      className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
+                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-400 transition cursor-pointer"
                     />
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-base font-medium text-grays-black">Participants</label>
+                  <label className="text-sm font-semibold text-slate-750">Participants</label>
                   <input
                     type="text"
                     required
                     value={participants}
                     onChange={(e) => setParticipants(e.target.value)}
                     placeholder="comma separated names"
-                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition"
                   />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-base font-medium text-grays-black">Meeting Agenda</label>
+                  <label className="text-sm font-semibold text-slate-750">Meeting Agenda</label>
                   <textarea
                     required
                     rows={4}
                     value={agenda}
                     onChange={(e) => setAgenda(e.target.value)}
                     placeholder="Describe target achievements for this sync..."
-                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb] resize-none"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition resize-none"
                   />
                 </div>
 
                 {/* Google Meet Option Section */}
-                <div className="flex flex-col gap-3 bg-white/70 p-4 rounded-[14px] border border-solid border-[#ddd] shadow-[0px_2px_0px_#ddd]">
+                <div className="flex flex-col gap-3 bg-slate-50/50 p-4 rounded-xl border border-solid border-slate-200">
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
@@ -390,16 +386,16 @@ export default function MeetingsPage() {
                         setGenerateMeet(e.target.checked);
                         if (!e.target.checked) setCustomMeetLink("");
                       }}
-                      className="w-5 h-5 accent-[#2563eb] cursor-pointer"
+                      className="w-5 h-5 accent-slate-700 cursor-pointer"
                     />
-                    <label htmlFor="generateMeet" className="text-base font-bold text-grays-black cursor-pointer select-none">
+                    <label htmlFor="generateMeet" className="text-sm font-bold text-slate-800 cursor-pointer select-none">
                       🎥 Google Meet Integration
                     </label>
                   </div>
 
                   {generateMeet && (
                     <div className="flex flex-col gap-2 pl-8 pt-1">
-                      <label className="text-xs font-bold text-[#555]">
+                      <label className="text-xs font-semibold text-slate-500">
                         Enter custom Meet URL (or leave blank to auto-host a new call)
                       </label>
                       <input
@@ -407,12 +403,12 @@ export default function MeetingsPage() {
                         value={customMeetLink}
                         onChange={(e) => setCustomMeetLink(e.target.value)}
                         placeholder="https://meet.google.com/xxx-yyyy-zzz"
-                        className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[10px] py-2 px-3 text-sm font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
+                        className="w-full bg-white border border-solid border-slate-200 rounded-xl py-2 px-3 text-sm font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-450 transition"
                       />
                     </div>
                   )}
 
-                  <p className="m-0 text-sm text-[#555] font-['DM_Sans'] pl-8 leading-5">
+                  <p className="m-0 text-xs text-slate-400 font-['DM_Sans'] pl-8 leading-relaxed">
                     Clicking &quot;Join Call&quot; opens the meet page instantly to launch a real, active Google video session.
                   </p>
                 </div>
@@ -420,7 +416,7 @@ export default function MeetingsPage() {
                 <div className="flex gap-3 mt-2">
                   <button
                     type="submit"
-                    className="cursor-pointer border-none py-4 px-6 bg-dark hover:bg-green text-white font-bold rounded-[14px] flex-1 text-base shadow-[0px_3px_0px_#000] transition duration-200"
+                    className="cursor-pointer border-none py-3.5 px-6 bg-slate-700 hover:bg-slate-800 text-white font-semibold rounded-xl flex-1 text-base shadow-sm hover:shadow transition-all duration-200"
                   >
                     {editingId ? "Update Sync" : "Confirm Schedule"}
                   </button>
@@ -441,7 +437,7 @@ export default function MeetingsPage() {
                         setGenerateMeet(false);
                         setCustomMeetLink("");
                       }}
-                      className="cursor-pointer border-dark border-solid border-[1px] py-4 px-6 bg-transparent rounded-[14px] text-base font-bold text-grays-black hover:bg-white transition duration-200"
+                      className="cursor-pointer border border-solid border-slate-200 py-3.5 px-6 bg-white rounded-xl text-base font-semibold text-slate-700 hover:bg-slate-50 transition duration-200"
                     >
                       Cancel Edit
                     </button>
@@ -451,11 +447,11 @@ export default function MeetingsPage() {
             </div>
           ) : (
             /* Non-manager placeholder */
-            <div className="w-[45%] shadow-[0px_5px_0px_#0f172a] rounded-[45px] bg-[#f8fafc] border-dark border-solid border-[1px] box-border p-10 flex flex-col gap-4 mq1125:w-full">
-              <h2 className="m-0 text-3xl font-medium text-grays-black">Schedule Team Sync</h2>
-              <div className="bg-blue-50 text-blue-800 p-6 rounded-[20px] border border-solid border-blue-200 flex flex-col gap-3">
+            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-4 mq1125:w-full">
+              <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">Schedule Team Sync</h2>
+              <div className="bg-slate-50 text-slate-700 p-6 rounded-xl border border-solid border-slate-200 flex flex-col gap-3">
                 <span className="text-base font-bold">📋 View Only Access</span>
-                <p className="m-0 text-sm font-['DM_Sans'] leading-6">
+                <p className="m-0 text-sm font-['DM_Sans'] leading-relaxed text-slate-500">
                   Only the workspace group manager (<strong>{activeGroup.members.find(m => m.id === activeGroup.managerId)?.name}</strong>) can schedule new syncs or edit existing ones.
                 </p>
               </div>
@@ -464,23 +460,23 @@ export default function MeetingsPage() {
 
           {/* Scheduled Meetings List Section */}
           <div className="w-[55%] flex flex-col gap-6 mq1125:w-full">
-            <h2 className="m-0 text-3xl font-medium text-grays-black">
+            <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
               Scheduled Meetings ({meetings.length})
             </h2>
 
             {error && !isManager && (
-              <div className="bg-red-50 text-red-600 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
+              <div className="bg-red-50 text-red-700 px-5 py-3 rounded-xl border border-solid border-red-150 text-sm font-medium">
                 {error}
               </div>
             )}
             {successMsg && !isManager && (
-              <div className="bg-blue-50 text-blue-700 px-5 py-3 rounded-[10px] border border-solid border-blue-200 text-sm font-medium">
+              <div className="bg-slate-50 text-slate-700 px-5 py-3 rounded-xl border border-solid border-slate-200 text-sm font-medium">
                 {successMsg}
               </div>
             )}
 
             {meetings.length === 0 ? (
-              <div className="w-full rounded-[30px] border border-dashed border-[#ccc] p-12 text-center text-lg text-[#888] font-['DM_Sans'] bg-[#fafafa]">
+              <div className="w-full rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
                 No syncs planned for this workspace yet.
               </div>
             ) : (
@@ -488,73 +484,73 @@ export default function MeetingsPage() {
                 {meetings.map((meeting) => (
                   <div
                     key={meeting.id}
-                    className="w-full shadow-[0px_5px_0px_#0f172a] rounded-[30px] bg-[#fff] border-dark border-solid border-[1px] box-border p-6 flex flex-col gap-4 relative"
+                    className="w-full shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-4 relative"
                   >
                     <div className="flex justify-between items-start gap-4">
                       <div className="flex flex-col gap-1">
-                        <h3 className="m-0 text-2xl font-medium text-grays-black">
+                        <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">
                           {meeting.title}
                         </h3>
-                        <div className="text-base text-[#555] font-['DM_Sans']">
+                        <div className="text-sm text-slate-500 font-['DM_Sans'] mt-1">
                           📅 {meeting.date} at ⏰ {meeting.time}
                         </div>
                       </div>
 
                       {/* Status Badges */}
                       <span
-                        className={`text-sm px-3.5 py-1.5 rounded-[12px] font-bold border border-solid ${
+                        className={`text-xs px-3 py-1.5 rounded-lg font-bold border border-solid ${
                           meeting.status === "Upcoming"
-                            ? "bg-green text-white border-green"
+                            ? "bg-slate-600 text-white border-slate-600"
                             : meeting.status === "Completed"
-                            ? "bg-dark text-white border-dark"
-                            : "bg-red-50 text-red-600 border-red-200"
+                            ? "bg-slate-800 text-white border-slate-800"
+                            : "bg-red-50 text-red-700 border-red-150"
                         }`}
                       >
                         {meeting.status}
                       </span>
                     </div>
 
-                    <div className="border-t border-solid border-[#eee] pt-3">
-                      <b className="text-base text-grays-black block mb-1">Agenda</b>
-                      <p className="m-0 text-base text-[#555] leading-6 font-['DM_Sans']">
+                    <div className="border-t border-solid border-slate-100 pt-3">
+                      <b className="text-sm text-slate-800 block mb-1">Agenda</b>
+                      <p className="m-0 text-sm text-slate-500 leading-relaxed font-['DM_Sans']">
                         {meeting.agenda}
                       </p>
                     </div>
 
-                    <div className="border-t border-solid border-[#eee] pt-3">
-                      <b className="text-base text-grays-black block mb-1">Participants</b>
-                      <div className="text-base text-[#555] font-['DM_Sans']">
+                    <div className="border-t border-solid border-slate-100 pt-3">
+                      <b className="text-sm text-slate-800 block mb-1">Participants</b>
+                      <div className="text-sm text-slate-500 font-['DM_Sans']">
                         👥 {meeting.participants}
                       </div>
                     </div>
 
                     {/* Google Meet Connection Segment */}
                     {meeting.status === "Upcoming" && (
-                      <div className="border-t border-solid border-[#eee] pt-3 flex flex-col gap-2">
-                        <b className="text-base text-grays-black block">Virtual Call Access</b>
+                      <div className="border-t border-solid border-slate-100 pt-3 flex flex-col gap-2">
+                        <b className="text-sm text-slate-800 block">Virtual Call Access</b>
                         {meeting.meetLink ? (
-                          <div className="flex items-center justify-between gap-4 bg-blue-50/50 p-3.5 rounded-[14px] border border-solid border-[#2563eb]/20">
-                            <span className="text-sm font-bold text-grays-black truncate font-['DM_Sans'] max-w-[250px]">
+                          <div className="flex items-center justify-between gap-4 bg-slate-50/50 p-3.5 rounded-xl border border-solid border-slate-200">
+                            <span className="text-xs font-bold text-slate-700 truncate font-['DM_Sans'] max-w-[250px]">
                               🔗 {meeting.meetLink}
                             </span>
                             <a
                               href={meeting.meetLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="cursor-pointer bg-dark text-white hover:bg-green hover:text-white font-bold text-sm px-4.5 py-2.5 rounded-[10px] no-underline shadow-[0px_2.5px_0px_#000] transition duration-200 shrink-0"
+                              className="cursor-pointer bg-slate-700 text-white hover:bg-slate-850 font-semibold text-xs px-4 py-2 rounded-lg no-underline hover:shadow transition-all duration-200 shrink-0"
                             >
                               Join Call
                             </a>
                           </div>
                         ) : (
-                          <div className="flex items-center justify-between gap-4 bg-grey p-3.5 rounded-[14px] border border-solid border-[#eee]">
-                            <span className="text-sm text-[#777] font-['DM_Sans']">
+                          <div className="flex items-center justify-between gap-4 bg-slate-50/30 p-3 rounded-xl border border-solid border-slate-100">
+                            <span className="text-xs text-slate-400 font-['DM_Sans']">
                               No virtual meet link set up yet.
                             </span>
                             {isManager && (
                               <button
                                 onClick={() => handleAddMeetLink(meeting.id)}
-                                className="cursor-pointer bg-green border border-solid border-green px-4 py-2.5 rounded-[10px] text-sm font-bold text-white hover:bg-white hover:text-grays-black transition duration-200 shadow-[0px_2px_0px_#0f172a]"
+                                className="cursor-pointer bg-slate-100 border border-solid border-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-200 transition duration-200"
                               >
                                 Host a Meet
                               </button>
@@ -565,36 +561,36 @@ export default function MeetingsPage() {
                     )}
 
                     {/* Action Panel */}
-                    <div className="flex justify-end gap-3 mt-2 pt-3 border-t border-solid border-[#eee]">
+                    <div className="flex justify-end gap-3 mt-2 pt-3 border-t border-solid border-slate-100">
                       {isManager && meeting.status === "Upcoming" && (
                         <>
                           <button
                             onClick={() => handleComplete(meeting.id)}
-                            className="cursor-pointer bg-green border border-solid border-green px-4 py-2 rounded-[10px] text-sm font-bold text-white hover:bg-[#fff] hover:text-grays-black transition duration-200"
+                            className="cursor-pointer bg-slate-700 border-none px-4 py-2 rounded-lg text-xs font-semibold text-white hover:bg-slate-800 transition duration-200"
                           >
                             Mark Completed
                           </button>
                           <button
                             onClick={() => handleEdit(meeting)}
-                            className="cursor-pointer bg-grey border border-solid border-[#ddd] px-4 py-2 rounded-[10px] text-sm font-bold text-grays-black hover:bg-white transition duration-200"
+                            className="cursor-pointer bg-white border border-solid border-slate-200 px-4 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition duration-200"
                           >
                             Edit Details
                           </button>
                           <button
                             onClick={() => handleCancel(meeting.id)}
-                            className="cursor-pointer bg-red-50 border border-solid border-red-200 px-4 py-2 rounded-[10px] text-sm font-bold text-red-600 hover:bg-red-100 transition duration-200"
+                            className="cursor-pointer bg-red-50 border border-solid border-red-150 px-4 py-2 rounded-lg text-xs font-semibold text-red-700 hover:bg-red-100 transition duration-200"
                           >
                             Cancel
                           </button>
                         </>
                       )}
                       {!isManager && meeting.status === "Upcoming" && (
-                        <span className="text-sm font-medium text-[#777] font-['DM_Sans']">
+                        <span className="text-xs font-medium text-slate-400 font-['DM_Sans']">
                           Waiting for meeting to start...
                         </span>
                       )}
                       {meeting.status !== "Upcoming" && (
-                        <span className="text-sm font-medium text-[#aaa] font-['DM_Sans']">
+                        <span className="text-xs font-medium text-slate-400 font-['DM_Sans']">
                           No actions available for {meeting.status.toLowerCase()} meetings
                         </span>
                       )}

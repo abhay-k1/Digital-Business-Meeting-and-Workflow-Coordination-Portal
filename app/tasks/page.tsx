@@ -183,8 +183,11 @@ export default function TasksPage() {
 
   if (loading || !session || !activeGroup) {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-white font-['Space_Grotesk'] text-2xl font-bold">
-        Loading tasks workspace...
+      <div className="w-full min-h-screen flex flex-col items-center justify-center bg-slate-50 font-['Space_Grotesk'] text-slate-800">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-600 rounded-full animate-spin"></div>
+          <span className="text-xl font-medium tracking-wide">Loading tasks workspace...</span>
+        </div>
       </div>
     );
   }
@@ -192,16 +195,16 @@ export default function TasksPage() {
   const isManager = activeGroup.managerId === session.id;
 
   return (
-    <div className="w-full min-h-screen relative bg-[#fff] overflow-hidden flex flex-col items-start pt-[61px] px-0 pb-0 box-border gap-20 leading-[normal] tracking-[normal] text-left font-['Space_Grotesk']">
+    <div className="w-full min-h-screen relative bg-slate-50/50 overflow-hidden flex flex-col items-start pt-[61px] px-0 pb-0 box-border gap-20 leading-[normal] tracking-[normal] text-left font-['Space_Grotesk']">
       <FrameComponent />
 
       <main className="self-stretch flex flex-col gap-16 px-16 box-border max-w-full mq800:px-6">
         {/* Active Group Sub-header Banner */}
-        <div className="w-full flex justify-between items-center bg-[#f8fafc] border border-solid border-slate-200 p-5 rounded-[20px] shadow-[0px_2px_0px_#0f172a]">
-          <div className="text-base text-[#555] font-['DM_Sans']">
-            Workspace: 🏢 <strong className="text-grays-black text-lg">{activeGroup.name}</strong> (Code: <span className="font-mono bg-slate-200 px-2 py-0.5 rounded font-bold">{activeGroup.code}</span>)
+        <div className="w-full flex justify-between items-center bg-white border border-solid border-slate-200 p-5 rounded-2xl shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)]">
+          <div className="text-base text-slate-500 font-['DM_Sans']">
+            Workspace: 🏢 <strong className="text-slate-800 text-lg">{activeGroup.name}</strong> (Code: <span className="font-mono bg-slate-100 border border-solid border-slate-200 px-2.5 py-0.5 rounded text-slate-700 font-semibold">{activeGroup.code}</span>)
           </div>
-          <a href="/dashboard" className="text-sm font-bold text-[#2563eb] underline hover:text-blue-700">
+          <a href="/dashboard" className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors no-underline">
             Switch Workspace Group
           </a>
         </div>
@@ -209,18 +212,11 @@ export default function TasksPage() {
         {/* Title Section */}
         <div className="flex items-center gap-10 max-w-full mq800:flex-wrap">
           <Heading
-            property1="Green"
             label="Task"
-            labelWidth="unset"
-            labelHeight="unset"
             label1="Allocation"
             showLabel={true}
-            labelWidth1="unset"
-            labelHeight1="unset"
-            label2="Label"
-            labelVisible={false}
           />
-          <b className="w-[450px] relative inline-block text-xl font-['DM_Sans'] text-[#555] font-normal mq450:text-base">
+          <b className="w-[450px] relative inline-block text-lg font-['DM_Sans'] text-slate-500 font-normal leading-relaxed mq450:text-base">
             Assign work, specify priority, monitor deadlines, and track real-time completion states.
           </b>
         </div>
@@ -228,43 +224,43 @@ export default function TasksPage() {
         <div className="w-full flex items-start gap-12 mq1125:flex-col">
           {/* Allocator Form Section (Only for Manager) */}
           {isManager ? (
-            <div className="w-[45%] shadow-[0px_5px_0px_#0f172a] rounded-[45px] bg-[#f8fafc] border-dark border-solid border-[1px] box-border p-10 flex flex-col gap-6 mq1125:w-full">
-              <h2 className="m-0 text-3xl font-medium text-grays-black">
+            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-6 mq1125:w-full">
+              <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
                 Allocate New Task
               </h2>
 
               {error && (
-                <div className="bg-red-50 text-red-600 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
+                <div className="bg-red-50 text-red-700 px-5 py-3 rounded-xl border border-solid border-red-150 text-sm font-medium">
                   {error}
                 </div>
               )}
               {successMsg && (
-                <div className="bg-blue-50 text-blue-700 px-5 py-3 rounded-[10px] border border-solid border-blue-200 text-sm font-medium">
+                <div className="bg-slate-50 text-slate-700 px-5 py-3 rounded-xl border border-solid border-slate-200 text-sm font-medium">
                   {successMsg}
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <div className="flex flex-col gap-2">
-                  <label className="text-base font-medium text-grays-black">Task Title</label>
+                  <label className="text-sm font-semibold text-slate-750">Task Title</label>
                   <input
                     type="text"
                     required
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Design Dashboard Prototypes"
-                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition"
                   />
                 </div>
 
                 <div className="flex gap-4 mq450:flex-col">
                   <div className="flex flex-col gap-2 flex-1">
-                    <label className="text-base font-medium text-grays-black">Assign Employee</label>
+                    <label className="text-sm font-semibold text-slate-750">Assign Employee</label>
                     <select
                       required
                       value={assignedMemberId}
                       onChange={(e) => setAssignedMemberId(e.target.value)}
-                      className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb] cursor-pointer"
+                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-400 transition cursor-pointer"
                     >
                       {activeGroup.members.map((m) => (
                         <option key={m.id} value={m.id}>
@@ -274,29 +270,29 @@ export default function TasksPage() {
                     </select>
                   </div>
                   <div className="flex flex-col gap-2 flex-1">
-                    <label className="text-base font-medium text-grays-black">Deadline</label>
+                    <label className="text-sm font-semibold text-slate-750">Deadline</label>
                     <input
                       type="date"
                       required
                       value={deadline}
                       onChange={(e) => setDeadline(e.target.value)}
-                      className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
+                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-slate-400 transition cursor-pointer"
                     />
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-base font-medium text-grays-black">Priority Level</label>
+                  <label className="text-sm font-semibold text-slate-750">Priority Level</label>
                   <div className="flex gap-3">
                     {(["Low", "Medium", "High"] as const).map((lvl) => (
                       <button
                         key={lvl}
                         type="button"
                         onClick={() => setPriority(lvl)}
-                        className={`cursor-pointer flex-1 py-3 px-4 rounded-[14px] text-base font-bold text-center border transition-all duration-200 ${
+                        className={`cursor-pointer flex-1 py-3 px-4 rounded-xl text-sm font-semibold text-center border transition-all duration-205 ${
                           priority === lvl
-                            ? "bg-green text-white border-none font-extrabold shadow-[0px_3px_0px_#0f172a]"
-                            : "bg-white text-grays-black border-dark border-solid border-[1px]"
+                            ? "bg-slate-700 text-white border-solid border-slate-700 shadow-sm"
+                            : "bg-white text-slate-700 border-solid border-slate-200 hover:bg-slate-50"
                         }`}
                       >
                         {lvl}
@@ -306,20 +302,20 @@ export default function TasksPage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-base font-medium text-grays-black">Task Description</label>
+                  <label className="text-sm font-semibold text-slate-750">Task Description</label>
                   <textarea
                     required
                     rows={4}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Provide instructions and expectations for this task..."
-                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb] resize-none"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-slate-400 transition resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="cursor-pointer border-none py-4 px-6 bg-dark hover:bg-green text-white font-bold rounded-[14px] text-base shadow-[0px_3px_0px_#000] mt-2 transition duration-200"
+                  className="cursor-pointer border-none py-3.5 px-6 bg-slate-700 hover:bg-slate-800 text-white font-semibold rounded-xl text-base shadow-sm hover:shadow transition duration-200 mt-2"
                 >
                   Confirm Allocation
                 </button>
@@ -327,11 +323,11 @@ export default function TasksPage() {
             </div>
           ) : (
             /* Non-manager placeholder banner */
-            <div className="w-[45%] shadow-[0px_5px_0px_#0f172a] rounded-[45px] bg-[#f8fafc] border-dark border-solid border-[1px] box-border p-10 flex flex-col gap-4 mq1125:w-full">
-              <h2 className="m-0 text-3xl font-medium text-grays-black">Allocate New Task</h2>
-              <div className="bg-blue-50 text-blue-800 p-6 rounded-[20px] border border-solid border-blue-200 flex flex-col gap-3">
+            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-4 mq1125:w-full">
+              <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">Allocate New Task</h2>
+              <div className="bg-slate-50 text-slate-700 p-6 rounded-xl border border-solid border-slate-200 flex flex-col gap-3">
                 <span className="text-base font-bold">📋 View Only Access</span>
-                <p className="m-0 text-sm font-['DM_Sans'] leading-6">
+                <p className="m-0 text-sm font-['DM_Sans'] leading-relaxed text-slate-500">
                   Only the workspace group manager (<strong>{activeGroup.members.find(m => m.id === activeGroup.managerId)?.name}</strong>) can assign new tasks to team members.
                 </p>
               </div>
@@ -340,23 +336,23 @@ export default function TasksPage() {
 
           {/* Allocated Tasks List Section */}
           <div className="w-[55%] flex flex-col gap-6 mq1125:w-full">
-            <h2 className="m-0 text-3xl font-medium text-grays-black">
+            <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
               {isManager ? `Allocated Tasks (${tasks.length})` : `Your Assigned Tasks (${tasks.length})`}
             </h2>
 
             {error && !isManager && (
-              <div className="bg-red-50 text-red-600 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
+              <div className="bg-red-50 text-red-700 px-5 py-3 rounded-xl border border-solid border-red-150 text-sm font-medium">
                 {error}
               </div>
             )}
             {successMsg && !isManager && (
-              <div className="bg-blue-50 text-blue-700 px-5 py-3 rounded-[10px] border border-solid border-blue-200 text-sm font-medium">
+              <div className="bg-slate-50 text-slate-700 px-5 py-3 rounded-xl border border-solid border-slate-200 text-sm font-medium">
                 {successMsg}
               </div>
             )}
 
             {tasks.length === 0 ? (
-              <div className="w-full rounded-[30px] border border-dashed border-[#ccc] p-12 text-center text-lg text-[#888] font-['DM_Sans'] bg-[#fafafa]">
+              <div className="w-full rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
                 {isManager ? "No tasks allocated yet. Begin assigning work to your team!" : "No tasks assigned to you in this group."}
               </div>
             ) : (
@@ -364,53 +360,53 @@ export default function TasksPage() {
                 {tasks.map((task) => (
                   <div
                     key={task.id}
-                    className="w-full shadow-[0px_5px_0px_#0f172a] rounded-[30px] bg-[#fff] border-dark border-solid border-[1px] box-border p-6 flex flex-col gap-4 relative"
+                    className="w-full shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-4 relative"
                   >
                     <div className="flex justify-between items-start gap-4">
                       <div className="flex flex-col gap-1">
-                        <h3 className="m-0 text-2xl font-medium text-grays-black">
+                        <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">
                           {task.title}
                         </h3>
-                        <div className="text-base text-[#555] font-['DM_Sans']">
-                          👤 Assigned: <span className="font-bold text-grays-black">{task.assignedMember}</span>
+                        <div className="text-sm text-slate-500 font-['DM_Sans'] mt-1">
+                          👤 Assigned: <span className="font-semibold text-slate-700">{task.assignedMember}</span>
                         </div>
                       </div>
 
                       {/* Priority Badges */}
                       <span
-                        className={`text-xs px-3 py-1 rounded-[10px] font-bold border border-solid ${
+                        className={`text-xs px-3 py-1 rounded-md font-semibold border border-solid ${
                           task.priority === "High"
-                            ? "bg-red-50 text-red-600 border-red-200"
+                            ? "bg-red-50 text-red-700 border-red-150"
                             : task.priority === "Medium"
-                            ? "bg-orange-50 text-orange-600 border-orange-200"
-                            : "bg-blue-50 text-blue-600 border-blue-200"
+                            ? "bg-orange-50 text-orange-600 border-orange-100"
+                            : "bg-slate-50 text-slate-650 border-slate-200"
                         }`}
                       >
                         {task.priority} Priority
                       </span>
                     </div>
 
-                    <p className="m-0 text-base text-[#555] leading-6 font-['DM_Sans'] bg-slate-50/50 p-4 rounded-[14px] border border-solid border-slate-100">
+                    <p className="m-0 text-sm text-slate-500 leading-relaxed font-['DM_Sans'] bg-slate-50/50 p-4 rounded-xl border border-solid border-slate-100">
                       {task.description}
                     </p>
 
-                    <div className="flex justify-between items-center gap-4 pt-2 border-t border-solid border-[#eee] mq450:flex-col mq450:items-start">
-                      <div className="text-base text-grays-black font-['DM_Sans']">
-                        📅 Deadline: <span className="font-bold">{task.deadline}</span>
+                    <div className="flex justify-between items-center gap-4 pt-2 border-t border-solid border-slate-100 mq450:flex-col mq450:items-start">
+                      <div className="text-sm text-slate-700 font-['DM_Sans']">
+                        📅 Deadline: <span className="font-semibold">{task.deadline}</span>
                       </div>
 
                       {/* Interactive Status Dropdown */}
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-[#555]">Status:</span>
+                        <span className="text-xs font-semibold text-slate-500">Status:</span>
                         <select
                           value={task.status}
                           onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                          className={`cursor-pointer rounded-[10px] px-3 py-1.5 font-bold text-sm outline-none border border-solid transition duration-200 ${
+                          className={`cursor-pointer rounded-lg px-3 py-1.5 font-semibold text-xs outline-none border border-solid transition duration-200 ${
                             task.status === "Completed"
-                              ? "bg-dark text-white border-dark"
+                              ? "bg-slate-800 text-white border-slate-800"
                               : task.status === "In Progress"
-                              ? "bg-blue-50 text-[#2563eb] border-[#2563eb]"
-                              : "bg-grey text-grays-black border-[#ddd]"
+                              ? "bg-slate-100 text-slate-700 border-slate-200"
+                              : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                           }`}
                         >
                           <option value="Pending">Pending</option>

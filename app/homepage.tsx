@@ -38,7 +38,7 @@ const Homepage: NextPage = () => {
               aligned and every deadline on track.
             </div>
             <button
-              className="cursor-pointer border-none bg-green text-white rounded-[14px] px-10 py-5 font-bold text-xl hover:bg-blue-700 transition duration-200 shadow-[0px_3px_0px_#0f172a] flex items-center justify-center font-['Space_Grotesk']"
+              className="cursor-pointer border-none bg-[#475569] hover:bg-[#334155] text-white rounded-xl px-8 py-4 font-bold text-lg transition duration-200 shadow-sm flex items-center justify-center font-['Space_Grotesk']"
               onClick={onGetStartedTextClick}
             >
               Get Started
@@ -48,16 +48,12 @@ const Homepage: NextPage = () => {
       </section>
       <div className="ml-[-28px] w-[1440px] flex items-start py-0 px-[100px] box-border gap-10 max-w-full z-[1] shrink-0 mq1125:flex-wrap mq1125:pl-[50px] mq1125:pr-[50px] mq1125:box-border mq800:gap-5 mq800:pl-[25px] mq800:pr-[25px] mq800:box-border">
         <Heading
-          property1="Green"
           label="Services"
-          label1="Label"
+          label1="Core Solutions"
           showLabel
-          label2="Label"
-          labelVisible
         />
         <div className="w-[580px] relative inline-block shrink-0 max-w-full">
-          At our digital marketing agency, we offer a range of services to help
-          businesses grow and succeed online. These services include:
+          At our coordination portal, we provide a robust suite of tools designed to streamline business scheduling, task allocation, and collaboration.
         </div>
       </div>
       <ServicesBlock />

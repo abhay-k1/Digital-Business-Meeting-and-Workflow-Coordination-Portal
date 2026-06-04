@@ -1,5 +1,19 @@
 {
-  "groups": [],
+  "groups": [
+    {
+      "id": "g_1780573099277",
+      "name": "Internship week 3",
+      "code": "GRP-5274",
+      "managerId": "1",
+      "members": [
+        {
+          "id": "1",
+          "name": "Abhay Kamble",
+          "email": "demo@portal.com"
+        }
+      ]
+    }
+  ],
   "users": [
     {
       "id": "1",

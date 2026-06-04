@@ -11,7 +11,7 @@ export type FrameComponent2Type = {
 const FrameComponent2: NextPage<FrameComponent2Type> = ({ className = "" }) => {
   const [card1Items] = useState([
     {
-      cardBackgroundColor: "#b9ff66" as const,
+      cardBackgroundColor: "#eff6ff" as const,
       cardPadding: "39px 53px 33px 60px" as const,
       labelSpacer: "01",
       scheduleMeetings: "Schedule Meetings",
@@ -21,7 +21,7 @@ const FrameComponent2: NextPage<FrameComponent2Type> = ({ className = "" }) => {
       property1: "Minus" as const,
     },
     {
-      cardBackgroundColor: "#f3f3f3" as const,
+      cardBackgroundColor: "#f8fafc" as const,
       cardPadding: "39px 55px 36px 60px" as const,
       labelSpacer: "02",
       scheduleMeetings: "Assign & Manage Tasks",
@@ -31,7 +31,7 @@ const FrameComponent2: NextPage<FrameComponent2Type> = ({ className = "" }) => {
       property1: "Minus" as const,
     },
     {
-      cardBackgroundColor: "#b9ff66" as const,
+      cardBackgroundColor: "#eff6ff" as const,
       cardPadding: "39px 55px 36px 60px" as const,
       labelSpacer: "03",
       scheduleMeetings: "Collaborate with Teams",
@@ -41,7 +41,7 @@ const FrameComponent2: NextPage<FrameComponent2Type> = ({ className = "" }) => {
       property1: "Minus" as const,
     },
     {
-      cardBackgroundColor: "#f3f3f3" as const,
+      cardBackgroundColor: "#f8fafc" as const,
       cardPadding: "39px 55px 36px 60px" as const,
       labelSpacer: "04",
       scheduleMeetings: "Track Workflow Progress",
@@ -57,16 +57,9 @@ const FrameComponent2: NextPage<FrameComponent2Type> = ({ className = "" }) => {
     >
       <div className="w-[1440px] h-[52px] flex items-start py-0 px-[100px] box-border gap-10 max-w-[102%] shrink-0 mq1125:flex-wrap mq1125:pl-[50px] mq1125:pr-[50px] mq1125:box-border mq800:gap-5 mq800:pl-[25px] mq800:pr-[25px] mq800:box-border">
         <Heading
-          property1="Green"
           label="Our Working Process "
-          labelWidth="unset"
-          labelHeight="unset"
-          label1="Label"
+          label1="Workflow"
           showLabel
-          labelWidth1="unset"
-          labelHeight1="unset"
-          label2="Label"
-          labelVisible
         />
         <b className="w-[292px] relative inline-block whitespace-pre-wrap shrink-0 mq450:text-base">
           Step-by-Step Guide to Achieving Your Goals

@@ -72,7 +72,7 @@ const Card: NextPage<CardType> = ({
 
   return (
     <div
-      className={`w-[600px] shadow-[0px_5px_0px_#191a23] rounded-[45px] bg-grey border-dark border-solid border-[1px] box-border overflow-hidden shrink-0 flex items-center justify-between py-12 px-[50px] gap-5 max-w-full cursor-pointer mq800:gap-5 mq800:pl-[25px] mq800:pr-[25px] mq800:box-border ${className}`}
+      className={`w-[600px] shadow-[0_8px_30px_rgb(15,23,42,0.03)] border-slate-100 border-solid border rounded-[24px] bg-grey box-border overflow-hidden shrink-0 flex items-center justify-between py-12 px-[50px] gap-5 max-w-full cursor-pointer hover:shadow-[0_8px_30px_rgba(71,85,105,0.08)] hover:-translate-y-0.5 transition-all duration-300 mq800:gap-5 mq800:pl-[25px] mq800:pr-[25px] mq800:box-border ${className}`}
       onClick={onCardContainerClick}
       style={cardStyle}
     >
@@ -81,14 +81,9 @@ const Card: NextPage<CardType> = ({
         style={headingAndLinkStyle}
       >
         <Heading
-          property1={property1}
           label={label}
-          labelWidth={labelWidth}
-          labelHeight={labelHeight}
           label1="Scheduling"
           showLabel={showLabel}
-          labelWidth1="unset"
-          labelHeight1="unset"
           label2="(SEO)"
           labelVisible={labelVisible}
         />
