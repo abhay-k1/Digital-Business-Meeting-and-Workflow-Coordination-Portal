@@ -22,8 +22,17 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized. Missing User ID." }, { status: 401 });
     }
 
+    const url = new URL(request.url);
+    const groupId = url.searchParams.get("groupId");
+
     const db = readDB();
-    const meetings = db.meetings.filter((m) => m.userId === userId);
+    let meetings;
+    if (groupId) {
+      meetings = db.meetings.filter((m) => m.groupId === groupId);
+    } else {
+      meetings = db.meetings.filter((m) => m.userId === userId);
+    }
+
     return NextResponse.json({ success: true, meetings });
   } catch (error) {
     console.error("Meetings GET error:", error);
@@ -38,7 +47,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, date, time, agenda, participants, generateMeet } = await request.json();
+    const { title, date, time, agenda, participants, generateMeet, groupId } = await request.json();
 
     if (!title || !date || !time || !agenda || !participants) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
@@ -48,6 +57,7 @@ export async function POST(request: Request) {
     const newMeeting: Meeting = {
       id: "m_" + Date.now().toString(),
       userId,
+      groupId,
       title,
       date,
       time,

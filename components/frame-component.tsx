@@ -59,7 +59,7 @@ const FrameComponent: NextPage<FrameComponentType> = ({ className = "" }) => {
         />
         <nav className="m-0 h-[45px] overflow-hidden shrink-0 flex items-center justify-center py-3 px-[15px] box-border gap-[35px] text-left text-[20.2px] text-grays-black font-['Inria_Serif'] mq1125:hidden mq800:gap-[20px]">
           <h3
-            className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#b9ff66]"
+            className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#2563eb]"
             onClick={onHomeTextClick}
           >
             Home
@@ -67,19 +67,19 @@ const FrameComponent: NextPage<FrameComponentType> = ({ className = "" }) => {
           {isLoggedIn ? (
             <>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#b9ff66]"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#2563eb]"
                 onClick={() => window.location.href = "/dashboard"}
               >
                 Dashboard
               </h3>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#b9ff66]"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#2563eb]"
                 onClick={() => window.location.href = "/meetings"}
               >
                 Meetings
               </h3>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#b9ff66]"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#2563eb]"
                 onClick={() => window.location.href = "/tasks"}
               >
                 Tasks
@@ -97,19 +97,19 @@ const FrameComponent: NextPage<FrameComponentType> = ({ className = "" }) => {
           ) : (
             <>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#b9ff66]"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#2563eb]"
                 onClick={onFeaturesTextClick}
               >
                 Features
               </h3>
               <h3
-                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#b9ff66]"
+                className="m-0 relative text-[length:inherit] font-normal font-[inherit] inline-block cursor-pointer hover:text-[#2563eb]"
                 onClick={onAboutUsTextClick}
               >
                 About Us
               </h3>
               <h3
-                className="m-0 relative text-[length:inherit] font-bold font-[inherit] inline-block cursor-pointer hover:text-[#b9ff66] bg-[#b9ff66] px-5 py-1.5 rounded-[10px] border border-solid border-dark shadow-[0px_2.5px_0px_#191a23]"
+                className="m-0 relative text-[length:inherit] font-bold font-[inherit] inline-block cursor-pointer text-white hover:text-white bg-[#2563eb] px-5 py-1.5 rounded-[10px] border border-solid border-dark shadow-[0px_2.5px_0px_#0f172a]"
                 onClick={() => window.location.href = "/login"}
               >
                 Login

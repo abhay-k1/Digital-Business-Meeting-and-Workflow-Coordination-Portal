@@ -80,7 +80,7 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
         />
         <Card
           onCardContainerClick={onCardContainerClick1}
-          cardBackgroundColor="#b9ff66"
+          cardBackgroundColor="#2563eb"
           cardPadding="48px 50px"
           cardGap="20px"
           headingAndLinkJustifyContent="unset"
@@ -99,7 +99,7 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
       <section className="flex items-start py-0 px-[100px] box-border gap-10 max-w-full z-[2] shrink-0 mq450:pl-5 mq450:pr-5 mq450:box-border mq800:gap-5 mq800:pl-[50px] mq800:pr-[50px] mq800:box-border mq1350:flex-wrap">
         <Card
           onCardContainerClick={onCardContainerClick2}
-          cardBackgroundColor="#191a23"
+          cardBackgroundColor="#0f172a"
           cardPadding="48px 50px"
           cardGap="20px"
           headingAndLinkJustifyContent="unset"
@@ -116,7 +116,7 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
         />
         <Card
           onCardContainerClick={onCardContainerClick3}
-          cardBackgroundColor="#f3f3f3"
+          cardBackgroundColor="#f8fafc"
           cardPadding="48px 49px"
           cardGap="11px"
           headingAndLinkJustifyContent="center"
@@ -132,26 +132,6 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
           icon="/Icon.svg"
         />
       </section>
-      <div className="w-[612px] h-[4808px] !!m-[0 important] absolute right-[-28px] bottom-[-2850px] flex items-start py-[60px] px-[70px] box-border isolate shrink-0 z-[-10] pointer-events-none">
-        <Image
-          className="h-full w-full absolute !!m-[0 important] top-[0px] right-[0px] bottom-[0px] left-[0px] max-w-full overflow-hidden max-h-full z-[0] shrink-0"
-          width={612}
-          height={4808}
-          sizes="100vw"
-          alt=""
-          src="/Waves.svg"
-        />
-        <div className="flex items-center z-[1] shrink-0">
-          <Image
-            className="h-[309px] w-full relative"
-            width={391.6}
-            height={309}
-            sizes="100vw"
-            alt=""
-            src="/Illustration.svg"
-          />
-        </div>
-      </div>
     </section>
   );
 };

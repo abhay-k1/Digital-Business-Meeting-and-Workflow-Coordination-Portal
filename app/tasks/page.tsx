@@ -11,20 +11,36 @@ interface Task {
   title: string;
   description: string;
   assignedMember: string;
+  assignedMemberId?: string;
   deadline: string;
   priority: "Low" | "Medium" | "High";
   status: "Pending" | "In Progress" | "Completed";
 }
 
+interface GroupMember {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Group {
+  id: string;
+  name: string;
+  code: string;
+  managerId: string;
+  members: GroupMember[];
+}
+
 export default function TasksPage() {
   const [session, setSession] = useState<any>(null);
+  const [activeGroup, setActiveGroup] = useState<Group | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Form states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [assignedMember, setAssignedMember] = useState("");
+  const [assignedMemberId, setAssignedMemberId] = useState("");
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState<"Low" | "Medium" | "High">("Medium");
   const [error, setError] = useState("");
@@ -37,20 +53,52 @@ export default function TasksPage() {
       return;
     }
     setSession(user);
-    fetchTasks(user.id);
+
+    const groupId = localStorage.getItem("active_group_id");
+    if (!groupId) {
+      window.location.href = "/dashboard";
+      return;
+    }
+
+    initPage(user.id, groupId);
   }, []);
 
-  const fetchTasks = async (userId: string) => {
+  const initPage = async (userId: string, groupId: string) => {
     try {
-      const res = await fetch(`/api/tasks?userId=${userId}`);
+      const res = await fetch(`/api/groups?userId=${userId}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error("Failed to load group details");
+
+      const matchedGroup = data.groups?.find((g: any) => g.id === groupId);
+      if (!matchedGroup) {
+        window.location.href = "/dashboard";
+        return;
+      }
+      setActiveGroup(matchedGroup);
+
+      // Pre-select first member in dropdown if available (and user is manager)
+      if (matchedGroup.managerId === userId && matchedGroup.members.length > 0) {
+        setAssignedMemberId(matchedGroup.members[0].id);
+      }
+
+      await fetchTasks(userId, groupId);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to initialize page");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTasks = async (userId: string, groupId: string) => {
+    try {
+      const res = await fetch(`/api/tasks?userId=${userId}&groupId=${groupId}`);
       const data = await res.json();
       if (res.ok) {
         setTasks(data.tasks || []);
       }
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -59,14 +107,23 @@ export default function TasksPage() {
     setError("");
     setSuccessMsg("");
 
-    if (!session) return;
+    if (!session || !activeGroup) return;
+
+    // Find member details
+    const selectedMember = activeGroup.members.find((m) => m.id === assignedMemberId);
+    if (!selectedMember) {
+      setError("Please select a valid member to assign the task.");
+      return;
+    }
 
     const payload = {
       title,
       description,
-      assignedMember,
+      assignedMember: selectedMember.name,
+      assignedMemberId: selectedMember.id,
       deadline,
       priority,
+      groupId: activeGroup.id,
     };
 
     try {
@@ -85,18 +142,22 @@ export default function TasksPage() {
       setSuccessMsg("Task allocated successfully!");
       setTitle("");
       setDescription("");
-      setAssignedMember("");
       setDeadline("");
       setPriority("Medium");
+      
+      // Keep dropdown preselected to first member
+      if (activeGroup.members.length > 0) {
+        setAssignedMemberId(activeGroup.members[0].id);
+      }
 
-      fetchTasks(session.id);
+      fetchTasks(session.id, activeGroup.id);
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     }
   };
 
   const handleStatusChange = async (taskId: string, newStatus: string) => {
-    if (!session) return;
+    if (!session || !activeGroup) return;
 
     try {
       const res = await fetch("/api/tasks", {
@@ -114,13 +175,13 @@ export default function TasksPage() {
       }
 
       setSuccessMsg("Task status updated!");
-      fetchTasks(session.id);
+      fetchTasks(session.id, activeGroup.id);
     } catch (err: any) {
       setError(err.message || "Failed to update task");
     }
   };
 
-  if (loading || !session) {
+  if (loading || !session || !activeGroup) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center bg-white font-['Space_Grotesk'] text-2xl font-bold">
         Loading tasks workspace...
@@ -128,11 +189,23 @@ export default function TasksPage() {
     );
   }
 
+  const isManager = activeGroup.managerId === session.id;
+
   return (
     <div className="w-full min-h-screen relative bg-[#fff] overflow-hidden flex flex-col items-start pt-[61px] px-0 pb-0 box-border gap-20 leading-[normal] tracking-[normal] text-left font-['Space_Grotesk']">
       <FrameComponent />
 
       <main className="self-stretch flex flex-col gap-16 px-16 box-border max-w-full mq800:px-6">
+        {/* Active Group Sub-header Banner */}
+        <div className="w-full flex justify-between items-center bg-[#f8fafc] border border-solid border-slate-200 p-5 rounded-[20px] shadow-[0px_2px_0px_#0f172a]">
+          <div className="text-base text-[#555] font-['DM_Sans']">
+            Workspace: 🏢 <strong className="text-grays-black text-lg">{activeGroup.name}</strong> (Code: <span className="font-mono bg-slate-200 px-2 py-0.5 rounded font-bold">{activeGroup.code}</span>)
+          </div>
+          <a href="/dashboard" className="text-sm font-bold text-[#2563eb] underline hover:text-blue-700">
+            Switch Workspace Group
+          </a>
+        </div>
+
         {/* Title Section */}
         <div className="flex items-center gap-10 max-w-full mq800:flex-wrap">
           <Heading
@@ -153,117 +226,145 @@ export default function TasksPage() {
         </div>
 
         <div className="w-full flex items-start gap-12 mq1125:flex-col">
-          {/* Allocator Form Section */}
-          <div className="w-[45%] shadow-[0px_5px_0px_#191a23] rounded-[45px] bg-[#f3f3f3] border-dark border-solid border-[1px] box-border p-10 flex flex-col gap-6 mq1125:w-full">
-            <h2 className="m-0 text-3xl font-medium text-grays-black">
-              Allocate New Task
-            </h2>
+          {/* Allocator Form Section (Only for Manager) */}
+          {isManager ? (
+            <div className="w-[45%] shadow-[0px_5px_0px_#0f172a] rounded-[45px] bg-[#f8fafc] border-dark border-solid border-[1px] box-border p-10 flex flex-col gap-6 mq1125:w-full">
+              <h2 className="m-0 text-3xl font-medium text-grays-black">
+                Allocate New Task
+              </h2>
 
-            {error && (
-              <div className="bg-red-50 text-red-600 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
-                {error}
-              </div>
-            )}
-            {successMsg && (
-              <div className="bg-[#b9ff66]/20 text-[#2f551c] px-5 py-3 rounded-[10px] border border-solid border-[#b9ff66] text-sm font-medium">
-                {successMsg}
-              </div>
-            )}
+              {error && (
+                <div className="bg-red-50 text-red-600 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
+                  {error}
+                </div>
+              )}
+              {successMsg && (
+                <div className="bg-blue-50 text-blue-700 px-5 py-3 rounded-[10px] border border-solid border-blue-200 text-sm font-medium">
+                  {successMsg}
+                </div>
+              )}
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <div className="flex flex-col gap-2">
-                <label className="text-base font-medium text-grays-black">Task Title</label>
-                <input
-                  type="text"
-                  required
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Design Dashboard Prototypes"
-                  className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#b9ff66]"
-                />
-              </div>
-
-              <div className="flex gap-4 mq450:flex-col">
-                <div className="flex flex-col gap-2 flex-1">
-                  <label className="text-base font-medium text-grays-black">Assign Member</label>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <div className="flex flex-col gap-2">
+                  <label className="text-base font-medium text-grays-black">Task Title</label>
                   <input
                     type="text"
                     required
-                    value={assignedMember}
-                    onChange={(e) => setAssignedMember(e.target.value)}
-                    placeholder="e.g. Rohit Patil"
-                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#b9ff66]"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Design Dashboard Prototypes"
+                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
                   />
                 </div>
-                <div className="flex flex-col gap-2 flex-1">
-                  <label className="text-base font-medium text-grays-black">Deadline</label>
-                  <input
-                    type="date"
-                    required
-                    value={deadline}
-                    onChange={(e) => setDeadline(e.target.value)}
-                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#b9ff66]"
-                  />
-                </div>
-              </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-base font-medium text-grays-black">Priority Level</label>
-                <div className="flex gap-3">
-                  {(["Low", "Medium", "High"] as const).map((lvl) => (
-                    <button
-                      key={lvl}
-                      type="button"
-                      onClick={() => setPriority(lvl)}
-                      className={`cursor-pointer flex-1 py-3 px-4 rounded-[14px] text-base font-bold text-center border transition-all duration-200 ${
-                        priority === lvl
-                          ? "bg-[#b9ff66] text-grays-black border-none font-extrabold shadow-[0px_3px_0px_#191a23]"
-                          : "bg-white text-grays-black border-dark border-solid border-[1px]"
-                      }`}
+                <div className="flex gap-4 mq450:flex-col">
+                  <div className="flex flex-col gap-2 flex-1">
+                    <label className="text-base font-medium text-grays-black">Assign Employee</label>
+                    <select
+                      required
+                      value={assignedMemberId}
+                      onChange={(e) => setAssignedMemberId(e.target.value)}
+                      className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb] cursor-pointer"
                     >
-                      {lvl}
-                    </button>
-                  ))}
+                      {activeGroup.members.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          {m.name} ({m.email})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2 flex-1">
+                    <label className="text-base font-medium text-grays-black">Deadline</label>
+                    <input
+                      type="date"
+                      required
+                      value={deadline}
+                      onChange={(e) => setDeadline(e.target.value)}
+                      className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb]"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-base font-medium text-grays-black">Task Description</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Provide instructions and expectations for this task..."
-                  className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#b9ff66] resize-none"
-                />
-              </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-base font-medium text-grays-black">Priority Level</label>
+                  <div className="flex gap-3">
+                    {(["Low", "Medium", "High"] as const).map((lvl) => (
+                      <button
+                        key={lvl}
+                        type="button"
+                        onClick={() => setPriority(lvl)}
+                        className={`cursor-pointer flex-1 py-3 px-4 rounded-[14px] text-base font-bold text-center border transition-all duration-200 ${
+                          priority === lvl
+                            ? "bg-green text-white border-none font-extrabold shadow-[0px_3px_0px_#0f172a]"
+                            : "bg-white text-grays-black border-dark border-solid border-[1px]"
+                        }`}
+                      >
+                        {lvl}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-              <button
-                type="submit"
-                className="cursor-pointer border-none py-4 px-6 bg-dark rounded-[14px] text-base font-bold text-[#fff] hover:bg-[#b9ff66] hover:text-grays-black transition duration-200 shadow-[0px_3px_0px_#000] mt-2"
-              >
-                Confirm Allocation
-              </button>
-            </form>
-          </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-base font-medium text-grays-black">Task Description</label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Provide instructions and expectations for this task..."
+                    className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black focus:ring-2 focus:ring-[#2563eb] resize-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="cursor-pointer border-none py-4 px-6 bg-dark hover:bg-green text-white font-bold rounded-[14px] text-base shadow-[0px_3px_0px_#000] mt-2 transition duration-200"
+                >
+                  Confirm Allocation
+                </button>
+              </form>
+            </div>
+          ) : (
+            /* Non-manager placeholder banner */
+            <div className="w-[45%] shadow-[0px_5px_0px_#0f172a] rounded-[45px] bg-[#f8fafc] border-dark border-solid border-[1px] box-border p-10 flex flex-col gap-4 mq1125:w-full">
+              <h2 className="m-0 text-3xl font-medium text-grays-black">Allocate New Task</h2>
+              <div className="bg-blue-50 text-blue-800 p-6 rounded-[20px] border border-solid border-blue-200 flex flex-col gap-3">
+                <span className="text-base font-bold">📋 View Only Access</span>
+                <p className="m-0 text-sm font-['DM_Sans'] leading-6">
+                  Only the workspace group manager (<strong>{activeGroup.members.find(m => m.id === activeGroup.managerId)?.name}</strong>) can assign new tasks to team members.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Allocated Tasks List Section */}
           <div className="w-[55%] flex flex-col gap-6 mq1125:w-full">
             <h2 className="m-0 text-3xl font-medium text-grays-black">
-              Allocated Tasks ({tasks.length})
+              {isManager ? `Allocated Tasks (${tasks.length})` : `Your Assigned Tasks (${tasks.length})`}
             </h2>
+
+            {error && !isManager && (
+              <div className="bg-red-50 text-red-600 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
+                {error}
+              </div>
+            )}
+            {successMsg && !isManager && (
+              <div className="bg-blue-50 text-blue-700 px-5 py-3 rounded-[10px] border border-solid border-blue-200 text-sm font-medium">
+                {successMsg}
+              </div>
+            )}
 
             {tasks.length === 0 ? (
               <div className="w-full rounded-[30px] border border-dashed border-[#ccc] p-12 text-center text-lg text-[#888] font-['DM_Sans'] bg-[#fafafa]">
-                No tasks allocated yet. Begin assigning work to your team!
+                {isManager ? "No tasks allocated yet. Begin assigning work to your team!" : "No tasks assigned to you in this group."}
               </div>
             ) : (
               <div className="flex flex-col gap-6 max-h-[800px] overflow-y-auto pr-2">
                 {tasks.map((task) => (
                   <div
                     key={task.id}
-                    className="w-full shadow-[0px_5px_0px_#191a23] rounded-[30px] bg-[#fff] border-dark border-solid border-[1px] box-border p-6 flex flex-col gap-4 relative"
+                    className="w-full shadow-[0px_5px_0px_#0f172a] rounded-[30px] bg-[#fff] border-dark border-solid border-[1px] box-border p-6 flex flex-col gap-4 relative"
                   >
                     <div className="flex justify-between items-start gap-4">
                       <div className="flex flex-col gap-1">
@@ -289,7 +390,7 @@ export default function TasksPage() {
                       </span>
                     </div>
 
-                    <p className="m-0 text-base text-[#555] leading-6 font-['DM_Sans'] bg-[#f9f9f9] p-4 rounded-[14px] border border-solid border-[#eee]">
+                    <p className="m-0 text-base text-[#555] leading-6 font-['DM_Sans'] bg-slate-50/50 p-4 rounded-[14px] border border-solid border-slate-100">
                       {task.description}
                     </p>
 
@@ -306,9 +407,9 @@ export default function TasksPage() {
                           onChange={(e) => handleStatusChange(task.id, e.target.value)}
                           className={`cursor-pointer rounded-[10px] px-3 py-1.5 font-bold text-sm outline-none border border-solid transition duration-200 ${
                             task.status === "Completed"
-                              ? "bg-[#191a23] text-white border-dark"
+                              ? "bg-dark text-white border-dark"
                               : task.status === "In Progress"
-                              ? "bg-[#b9ff66]/20 text-[#2f551c] border-[#b9ff66]"
+                              ? "bg-blue-50 text-[#2563eb] border-[#2563eb]"
                               : "bg-grey text-grays-black border-[#ddd]"
                           }`}
                         >

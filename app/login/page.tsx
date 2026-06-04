@@ -50,7 +50,7 @@ export default function LoginPage() {
       <FrameComponent />
 
       <main className="self-stretch flex flex-col items-center justify-center px-5 py-10">
-        <div className="w-full max-w-[500px] shadow-[0px_5px_0px_#191a23] rounded-[45px] bg-[#f3f3f3] border-dark border-solid border-[1px] box-border p-12 flex flex-col gap-8 mq450:px-6 mq450:py-8">
+        <div className="w-full max-w-[500px] shadow-[0px_5px_0px_#0f172a] rounded-[45px] bg-grey border-dark border-solid border-[1px] box-border p-12 flex flex-col gap-8 mq450:px-6 mq450:py-8">
           <div className="flex flex-col gap-2 text-center">
             <h1 className="m-0 text-5xl font-medium text-grays-black mq450:text-3xl">
               Welcome Back
@@ -77,7 +77,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@example.com"
-                className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-4 px-5 text-lg font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-[#999] focus:ring-2 focus:ring-[#b9ff66]"
+                className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-4 px-5 text-lg font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-[#999] focus:ring-2 focus:ring-[#2563eb]"
               />
             </div>
 
@@ -91,14 +91,14 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
-                className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-4 px-5 text-lg font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-[#999] focus:ring-2 focus:ring-[#b9ff66]"
+                className="w-full bg-[#fff] border-dark border-solid border-[1px] rounded-[14px] py-4 px-5 text-lg font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-[#999] focus:ring-2 focus:ring-[#2563eb]"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="cursor-pointer border-none py-5 px-[35px] bg-dark rounded-[14px] flex items-center justify-center text-xl font-['Space_Grotesk'] text-[#fff] font-bold hover:bg-[#b9ff66] hover:text-grays-black transition duration-200 disabled:opacity-50 mt-4 shadow-[0px_3px_0px_#000]"
+              className="cursor-pointer border-none py-5 px-[35px] bg-dark rounded-[14px] flex items-center justify-center text-xl font-['Space_Grotesk'] text-[#fff] font-bold hover:bg-[#2563eb] hover:text-white transition duration-200 disabled:opacity-50 mt-4 shadow-[0px_3px_0px_#0f172a]"
             >
               {loading ? "Logging in..." : "Login"}
             </button>
@@ -106,7 +106,7 @@ export default function LoginPage() {
 
           <div className="text-center font-['DM_Sans'] text-base">
             Don&apos;t have an account?{" "}
-            <a href="/register" className="text-grays-black font-bold underline hover:text-[#b9ff66]">
+            <a href="/register" className="text-grays-black font-bold underline hover:text-[#2563eb]">
               Register here
             </a>
           </div>

@@ -37,14 +37,11 @@ const Homepage: NextPage = () => {
               tasks, and coordinate work — powered by AI to keep everyone
               aligned and every deadline on track.
             </div>
-            <button className="cursor-pointer [border:none] pt-[30.7px] px-[59px] pb-[30.6px] bg-[transparent] w-[261px] h-[99.7px] rounded-[8.9px] [background:radial-gradient(50%_50%_at_50%_50%,_#dfdfdf_15.87%,_#a6c79f_98.08%)] flex items-start box-border mq450:pl-5 mq450:pr-5 mq450:box-border">
-              <div className="h-[99.7px] w-[261px] relative rounded-[8.9px] [background:radial-gradient(50%_50%_at_50%_50%,_#dfdfdf_15.87%,_#a6c79f_98.08%)] hidden shrink-0" />
-              <b
-                className="h-[38.4px] w-[142.4px] relative text-[24.9px] inline-block font-['Inria_Serif'] text-grays-black text-left cursor-pointer z-[1] shrink-0"
-                onClick={onGetStartedTextClick}
-              >
-                Get Started
-              </b>
+            <button
+              className="cursor-pointer border-none bg-green text-white rounded-[14px] px-10 py-5 font-bold text-xl hover:bg-blue-700 transition duration-200 shadow-[0px_3px_0px_#0f172a] flex items-center justify-center font-['Space_Grotesk']"
+              onClick={onGetStartedTextClick}
+            >
+              Get Started
             </button>
           </div>
         </div>

@@ -15,6 +15,7 @@ export interface User {
 export interface Meeting {
   id: string;
   userId: string;
+  groupId?: string;
   title: string;
   date: string;
   time: string;
@@ -27,6 +28,8 @@ export interface Meeting {
 export interface Task {
   id: string;
   userId: string;
+  groupId?: string;
+  assignedMemberId?: string;
   title: string;
   description: string;
   assignedMember: string;
@@ -35,10 +38,25 @@ export interface Task {
   status: "Pending" | "In Progress" | "Completed";
 }
 
+export interface GroupMember {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  code: string;
+  managerId: string;
+  members: GroupMember[];
+}
+
 export interface DatabaseSchema {
   users: User[];
   meetings: Meeting[];
   tasks: Task[];
+  groups: Group[];
 }
 
 /**
@@ -47,15 +65,17 @@ export interface DatabaseSchema {
 export function readDB(): DatabaseSchema {
   try {
     if (!fs.existsSync(DB_PATH)) {
-      const defaultDB: DatabaseSchema = { users: [], meetings: [], tasks: [] };
+      const defaultDB: DatabaseSchema = { users: [], meetings: [], tasks: [], groups: [] };
       fs.writeFileSync(DB_PATH, JSON.stringify(defaultDB, null, 2), "utf-8");
       return defaultDB;
     }
     const raw = fs.readFileSync(DB_PATH, "utf-8");
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!parsed.groups) parsed.groups = [];
+    return parsed;
   } catch (error) {
     console.error("Error reading database:", error);
-    return { users: [], meetings: [], tasks: [] };
+    return { users: [], meetings: [], tasks: [], groups: [] };
   }
 }
 
