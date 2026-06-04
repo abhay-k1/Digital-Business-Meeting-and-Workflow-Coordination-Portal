@@ -52,11 +52,21 @@ export interface Group {
   members: GroupMember[];
 }
 
+export interface Message {
+  id: string;
+  groupId: string;
+  userId: string;
+  userName: string;
+  content: string;
+  timestamp: string;
+}
+
 export interface DatabaseSchema {
   users: User[];
   meetings: Meeting[];
   tasks: Task[];
   groups: Group[];
+  messages: Message[];
 }
 
 /**
@@ -65,17 +75,18 @@ export interface DatabaseSchema {
 export function readDB(): DatabaseSchema {
   try {
     if (!fs.existsSync(DB_PATH)) {
-      const defaultDB: DatabaseSchema = { users: [], meetings: [], tasks: [], groups: [] };
+      const defaultDB: DatabaseSchema = { users: [], meetings: [], tasks: [], groups: [], messages: [] };
       fs.writeFileSync(DB_PATH, JSON.stringify(defaultDB, null, 2), "utf-8");
       return defaultDB;
     }
     const raw = fs.readFileSync(DB_PATH, "utf-8");
     const parsed = JSON.parse(raw);
     if (!parsed.groups) parsed.groups = [];
+    if (!parsed.messages) parsed.messages = [];
     return parsed;
   } catch (error) {
     console.error("Error reading database:", error);
-    return { users: [], meetings: [], tasks: [], groups: [] };
+    return { users: [], meetings: [], tasks: [], groups: [], messages: [] };
   }
 }
 

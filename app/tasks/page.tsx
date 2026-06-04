@@ -185,7 +185,7 @@ export default function TasksPage() {
     return (
       <div className="w-full min-h-screen flex flex-col items-center justify-center bg-slate-50 font-['Space_Grotesk'] text-slate-800">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-slate-200 border-t-[#097C87] rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-slate-200 border-t-[#355C7D] rounded-full animate-spin"></div>
           <span className="text-xl font-medium tracking-wide">Loading tasks workspace...</span>
         </div>
       </div>
@@ -202,7 +202,7 @@ export default function TasksPage() {
         {/* Active Group Sub-header Banner */}
         <div className="w-full flex justify-between items-center bg-white border border-solid border-slate-200 p-5 rounded-2xl shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)]">
           <div className="text-base text-slate-500 font-['DM_Sans']">
-            Workspace: 🏢 <strong className="text-slate-800 text-lg font-['Space_Grotesk']">{activeGroup.name}</strong> (Code: <span className="font-mono bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 px-2.5 py-0.5 rounded text-[#097C87] font-bold">{activeGroup.code}</span>)
+            Workspace: 🏢 <strong className="text-slate-800 text-lg font-['Space_Grotesk']">{activeGroup.name}</strong> (Code: <span className="font-mono bg-[#355C7D]/10 border border-solid border-[#355C7D]/20 px-2.5 py-0.5 rounded text-[#355C7D] font-bold">{activeGroup.code}</span>)
           </div>
           <a href="/dashboard" className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors no-underline">
             Switch Workspace Group
@@ -221,11 +221,11 @@ export default function TasksPage() {
           </b>
         </div>
 
-        <div className="w-full flex items-start gap-12 mq1125:flex-col">
+        <div className="w-full flex items-start gap-8 mq1125:flex-col">
           {/* Allocator Form Section (Only for Manager) */}
           {isManager ? (
-            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-6 mq1125:w-full">
-              <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
+            <div className="w-[30%] shrink-0 shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-6 mq1125:w-full">
+              <h2 className="m-0 text-xl font-bold text-slate-900 tracking-tight">
                 Allocate New Task
               </h2>
 
@@ -240,7 +240,7 @@ export default function TasksPage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-semibold text-slate-750">Task Title</label>
                   <input
@@ -249,49 +249,48 @@ export default function TasksPage() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Design Dashboard Prototypes"
-                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition"
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#355C7D] transition"
                   />
                 </div>
 
-                <div className="flex gap-4 mq450:flex-col">
-                  <div className="flex flex-col gap-2 flex-1">
-                    <label className="text-sm font-semibold text-slate-750">Assign Employee</label>
-                    <select
-                      required
-                      value={assignedMemberId}
-                      onChange={(e) => setAssignedMemberId(e.target.value)}
-                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#097C87] transition cursor-pointer"
-                    >
-                      {activeGroup.members.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.name} ({m.email})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex flex-col gap-2 flex-1">
-                    <label className="text-sm font-semibold text-slate-750">Deadline</label>
-                    <input
-                      type="date"
-                      required
-                      value={deadline}
-                      onChange={(e) => setDeadline(e.target.value)}
-                      className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#097C87] transition cursor-pointer"
-                    />
-                  </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-semibold text-slate-750">Assign Employee</label>
+                  <select
+                    required
+                    value={assignedMemberId}
+                    onChange={(e) => setAssignedMemberId(e.target.value)}
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#355C7D] transition cursor-pointer"
+                  >
+                    {activeGroup.members.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-semibold text-slate-750">Deadline</label>
+                  <input
+                    type="date"
+                    required
+                    value={deadline}
+                    onChange={(e) => setDeadline(e.target.value)}
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 focus:border-[#355C7D] transition cursor-pointer"
+                  />
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-semibold text-slate-750">Priority Level</label>
-                  <div className="flex gap-3">
+                  <div className="flex gap-2">
                     {(["Low", "Medium", "High"] as const).map((lvl) => (
                       <button
                         key={lvl}
                         type="button"
                         onClick={() => setPriority(lvl)}
-                        className={`cursor-pointer flex-1 py-3 px-4 rounded-xl text-sm font-bold text-center border transition-all duration-200 ${
+                        className={`cursor-pointer flex-1 py-2 px-3 rounded-lg text-xs font-bold text-center border transition-all duration-200 ${
                           priority === lvl
-                            ? "bg-[#097C87] text-white border-solid border-[#097C87] shadow-sm"
+                            ? "bg-[#355C7D] text-white border-solid border-[#355C7D] shadow-sm"
                             : "bg-white text-slate-700 border-solid border-slate-200 hover:bg-slate-50"
                         }`}
                       >
@@ -305,17 +304,17 @@ export default function TasksPage() {
                   <label className="text-sm font-semibold text-slate-750">Task Description</label>
                   <textarea
                     required
-                    rows={4}
+                    rows={3}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Provide instructions and expectations for this task..."
-                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#097C87] transition resize-none"
+                    placeholder="Provide instructions..."
+                    className="w-full bg-white border border-solid border-slate-200 rounded-xl py-2.5 px-4 text-sm font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#355C7D] transition resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="cursor-pointer border-none py-3.5 px-6 bg-[#097C87] hover:bg-[#23CED9] text-white font-bold rounded-xl text-base shadow-sm hover:shadow transition duration-200 mt-2"
+                  className="cursor-pointer border-none py-3 px-6 bg-[#355C7D] hover:bg-[#5C829E] text-white font-bold rounded-xl text-sm shadow-sm hover:shadow transition duration-200 mt-1"
                 >
                   Confirm Allocation
                 </button>
@@ -323,21 +322,21 @@ export default function TasksPage() {
             </div>
           ) : (
             /* Non-manager placeholder banner */
-            <div className="w-[45%] shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-8 flex flex-col gap-4 mq1125:w-full">
-              <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">Allocate New Task</h2>
-              <div className="bg-slate-50 text-slate-700 p-6 rounded-xl border border-solid border-slate-200 flex flex-col gap-3">
-                <span className="text-base font-bold">📋 View Only Access</span>
-                <p className="m-0 text-sm font-['DM_Sans'] leading-relaxed text-slate-500">
-                  Only the workspace group manager (<strong>{activeGroup.members.find(m => m.id === activeGroup.managerId)?.name}</strong>) can assign new tasks to team members.
+            <div className="w-[30%] shrink-0 shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-4 mq1125:w-full">
+              <h2 className="m-0 text-xl font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">Allocate New Task</h2>
+              <div className="bg-slate-50 text-slate-700 p-4 rounded-xl border border-solid border-slate-200 flex flex-col gap-2">
+                <span className="text-sm font-bold">📋 View Only Access</span>
+                <p className="m-0 text-xs font-['DM_Sans'] leading-relaxed text-slate-500">
+                  Only the group manager (<strong>{activeGroup.members.find(m => m.id === activeGroup.managerId)?.name}</strong>) can assign new tasks.
                 </p>
               </div>
             </div>
           )}
 
-          {/* Allocated Tasks List Section */}
-          <div className="w-[55%] flex flex-col gap-6 mq1125:w-full">
-            <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
-              {isManager ? `Allocated Tasks (${tasks.length})` : `Your Assigned Tasks (${tasks.length})`}
+          {/* Kanban Board Container */}
+          <div className="w-[70%] flex flex-col gap-6 mq1125:w-full">
+            <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">
+              {isManager ? "Workspace Kanban Board" : "Your Tasks Board"}
             </h2>
 
             {error && !isManager && (
@@ -352,72 +351,122 @@ export default function TasksPage() {
             )}
 
             {tasks.length === 0 ? (
-              <div className="w-full rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
-                {isManager ? "No tasks allocated yet. Begin assigning work to your team!" : "No tasks assigned to you in this group."}
+              <div className="w-full rounded-2xl border border-dashed border-slate-350 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
+                No tasks available in this workspace.
               </div>
             ) : (
-              <div className="flex flex-col gap-6 max-h-[800px] overflow-y-auto pr-2">
-                {tasks.map((task) => (
+              (() => {
+                const pendingColTasks = tasks.filter((t) => t.status === "Pending" || !t.status);
+                const inProgressColTasks = tasks.filter((t) => t.status === "In Progress");
+                const completedColTasks = tasks.filter((t) => t.status === "Completed");
+
+                const renderCard = (task: Task) => (
                   <div
                     key={task.id}
-                    className="w-full shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 box-border p-6 flex flex-col gap-4 relative"
+                    className="shadow-sm hover:shadow-md rounded-xl bg-white border border-solid border-slate-200/80 p-4 flex flex-col gap-3 transition-all duration-200 relative group"
                   >
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex flex-col gap-1">
-                        <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">
-                          {task.title}
-                        </h3>
-                        <div className="text-sm text-slate-500 font-['DM_Sans'] mt-1">
-                          👤 Assigned: <span className="font-semibold text-slate-700">{task.assignedMember}</span>
-                        </div>
-                      </div>
-
-                      {/* Priority Badges styled with palette colors */}
+                    <div className="flex justify-between items-start gap-2">
+                      <h4 className="m-0 text-sm font-bold text-slate-900 leading-tight font-['Space_Grotesk'] tracking-tight group-hover:text-[#355C7D] transition-colors">
+                        {task.title}
+                      </h4>
                       <span
-                        className={`text-xs px-3 py-1 rounded-md font-bold border border-solid ${
+                        className={`text-[9px] px-2 py-0.5 rounded font-bold border border-solid shrink-0 ${
                           task.priority === "High"
                             ? "bg-red-50 text-red-700 border-red-150"
                             : task.priority === "Medium"
                             ? "bg-orange-50 text-orange-650 border-orange-100"
-                            : "bg-[#A1CCA6]/15 text-[#097C87] border-[#A1CCA6]/30"
+                            : "bg-[#355C7D]/10 text-[#355C7D] border-[#355C7D]/20"
                         }`}
                       >
-                        {task.priority} Priority
+                        {task.priority}
                       </span>
                     </div>
 
-                    <p className="m-0 text-sm text-slate-500 leading-relaxed font-['DM_Sans'] bg-slate-50/50 p-4 rounded-xl border border-solid border-slate-100">
+                    <p className="m-0 text-xs text-slate-500 font-['DM_Sans'] leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-solid border-slate-100/60 line-clamp-3">
                       {task.description}
                     </p>
 
-                    <div className="flex justify-between items-center gap-4 pt-2 border-t border-solid border-slate-100 mq450:flex-col mq450:items-start">
-                      <div className="text-sm text-slate-750 font-['DM_Sans']">
-                        📅 Deadline: <span className="font-semibold">{task.deadline}</span>
-                      </div>
+                    <div className="flex flex-col gap-1 text-[11px] text-slate-400 font-['DM_Sans'] pt-1">
+                      <div>👤 Assigned: <strong className="text-slate-600">{task.assignedMember}</strong></div>
+                      <div>📅 Deadline: <strong className="text-slate-600">{task.deadline}</strong></div>
+                    </div>
 
-                      {/* Interactive Status Dropdown */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-slate-500">Status:</span>
-                        <select
-                          value={task.status}
-                          onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                          className={`cursor-pointer rounded-lg px-3 py-1.5 font-bold text-xs outline-none border border-solid transition duration-200 ${
-                            task.status === "Completed"
-                              ? "bg-slate-800 text-white border-slate-800"
-                              : task.status === "In Progress"
-                              ? "bg-[#23CED9]/10 text-[#097C87] border-[#23CED9]/20"
-                              : "bg-white text-slate-650 border-slate-200 hover:bg-slate-50"
-                          }`}
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="In Progress">In Progress</option>
-                          <option value="Completed">Completed</option>
-                        </select>
+                    <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-solid border-slate-100">
+                      <span className="text-[10px] font-semibold text-slate-400">Move Task:</span>
+                      <select
+                        value={task.status}
+                        onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                        className={`cursor-pointer rounded px-2.5 py-1.5 font-bold text-[10px] outline-none border border-solid transition duration-200 ${
+                          task.status === "Completed"
+                            ? "bg-slate-800 text-white border-slate-800"
+                            : task.status === "In Progress"
+                            ? "bg-[#355C7D]/15 text-[#355C7D] border-[#355C7D]/35"
+                            : "bg-white text-slate-650 border-slate-200 hover:bg-slate-50"
+                        }`}
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                      </select>
+                    </div>
+                  </div>
+                );
+
+                return (
+                  <div className="grid grid-cols-3 gap-4 w-full items-start mq800:grid-cols-1">
+                    {/* Pending Column */}
+                    <div className="bg-slate-100/50 rounded-xl p-3.5 border border-solid border-slate-200/60 min-h-[480px] flex flex-col gap-4">
+                      <div className="flex justify-between items-center pb-2 border-b border-solid border-slate-200/80">
+                        <span className="font-bold text-slate-800 text-sm font-['Space_Grotesk'] flex items-center gap-1.5">⏳ Pending</span>
+                        <span className="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+                          {pendingColTasks.length}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-3 overflow-y-auto max-h-[600px] pr-1">
+                        {pendingColTasks.length === 0 ? (
+                          <div className="text-center py-8 text-xs text-slate-400 font-['DM_Sans'] bg-white/40 border border-dashed border-slate-200 rounded-lg">No pending tasks</div>
+                        ) : (
+                          pendingColTasks.map(renderCard)
+                        )}
+                      </div>
+                    </div>
+
+                    {/* In Progress Column */}
+                    <div className="bg-slate-100/50 rounded-xl p-3.5 border border-solid border-slate-200/60 min-h-[480px] flex flex-col gap-4">
+                      <div className="flex justify-between items-center pb-2 border-b border-solid border-slate-200/80">
+                        <span className="font-bold text-[#355C7D] text-sm font-['Space_Grotesk'] flex items-center gap-1.5">⚙️ In Progress</span>
+                        <span className="text-[10px] bg-[#355C7D]/20 text-[#355C7D] px-2 py-0.5 rounded-full font-bold">
+                          {inProgressColTasks.length}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-3 overflow-y-auto max-h-[600px] pr-1">
+                        {inProgressColTasks.length === 0 ? (
+                          <div className="text-center py-8 text-xs text-slate-400 font-['DM_Sans'] bg-white/40 border border-dashed border-slate-200 rounded-lg">No tasks in progress</div>
+                        ) : (
+                          inProgressColTasks.map(renderCard)
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Completed Column */}
+                    <div className="bg-slate-100/50 rounded-xl p-3.5 border border-solid border-slate-200/60 min-h-[480px] flex flex-col gap-4">
+                      <div className="flex justify-between items-center pb-2 border-b border-solid border-slate-200/80">
+                        <span className="font-bold text-slate-800 text-sm font-['Space_Grotesk'] flex items-center gap-1.5">✅ Completed</span>
+                        <span className="text-[10px] bg-slate-800 text-white px-2 py-0.5 rounded-full font-bold">
+                          {completedColTasks.length}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-3 overflow-y-auto max-h-[600px] pr-1">
+                        {completedColTasks.length === 0 ? (
+                          <div className="text-center py-8 text-xs text-slate-400 font-['DM_Sans'] bg-white/40 border border-dashed border-slate-200 rounded-lg">No completed tasks</div>
+                        ) : (
+                          completedColTasks.map(renderCard)
+                        )}
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                );
+              })()
             )}
           </div>
         </div>

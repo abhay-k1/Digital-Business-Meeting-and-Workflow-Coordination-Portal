@@ -1,19 +1,4 @@
 {
-  "groups": [
-    {
-      "id": "g_1780573099277",
-      "name": "Internship week 3",
-      "code": "GRP-5274",
-      "managerId": "1",
-      "members": [
-        {
-          "id": "1",
-          "name": "Abhay Kamble",
-          "email": "demo@portal.com"
-        }
-      ]
-    }
-  ],
   "users": [
     {
       "id": "1",
@@ -26,38 +11,131 @@
       "name": "Vibhanshu G",
       "email": "vibhanshu@gmail.com",
       "password": "vibhanshu"
+    },
+    {
+      "id": "2",
+      "name": "Sneha Shinde",
+      "email": "sneha@portal.com",
+      "password": "password"
+    }
+  ],
+  "groups": [
+    {
+      "id": "g_1780573099277",
+      "name": "Internship Week 3",
+      "code": "GRP-5274",
+      "managerId": "1",
+      "members": [
+        {
+          "id": "1",
+          "name": "Abhay Kamble",
+          "email": "demo@portal.com"
+        },
+        {
+          "id": "1779907415345",
+          "name": "Vibhanshu G",
+          "email": "vibhanshu@gmail.com"
+        },
+        {
+          "id": "2",
+          "name": "Sneha Shinde",
+          "email": "sneha@portal.com"
+        }
+      ]
+    },
+    {
+      "id": "g_brand_review",
+      "name": "Design & Brand Alignment",
+      "code": "GRP-8020",
+      "managerId": "1779907415345",
+      "members": [
+        {
+          "id": "1779907415345",
+          "name": "Vibhanshu G",
+          "email": "vibhanshu@gmail.com"
+        },
+        {
+          "id": "1",
+          "name": "Abhay Kamble",
+          "email": "demo@portal.com"
+        },
+        {
+          "id": "2",
+          "name": "Sneha Shinde",
+          "email": "sneha@portal.com"
+        }
+      ]
+    },
+    {
+      "id": "g_qa_sync",
+      "name": "Quality Assurance Sync",
+      "code": "GRP-9941",
+      "managerId": "2",
+      "members": [
+        {
+          "id": "2",
+          "name": "Sneha Shinde",
+          "email": "sneha@portal.com"
+        },
+        {
+          "id": "1",
+          "name": "Abhay Kamble",
+          "email": "demo@portal.com"
+        },
+        {
+          "id": "1779907415345",
+          "name": "Vibhanshu G",
+          "email": "vibhanshu@gmail.com"
+        }
+      ]
     }
   ],
   "meetings": [
     {
       "id": "m1",
       "userId": "1",
+      "groupId": "g_1780573099277",
       "title": "Weekly Strategy Sync",
-      "date": "2026-06-01",
+      "date": "2026-06-08",
       "time": "10:00",
       "agenda": "Review quarterly targets, plan content calendar, and discuss client onboarding workflow.",
-      "participants": "Abhay Kamble, Rohit Patil, Sneha Shinde",
+      "participants": "Abhay Kamble, Vibhanshu G, Sneha Shinde",
       "status": "Upcoming",
       "meetLink": "https://meet.google.com/new"
     },
     {
       "id": "m2",
       "userId": "1",
+      "groupId": "g_1780573099277",
       "title": "UI Design Review",
-      "date": "2026-05-26",
+      "date": "2026-06-09",
       "time": "14:30",
       "agenda": "Finalize inner page card layouts, typography alignment, and color palette validation.",
       "participants": "Abhay Kamble, Sneha Shinde",
-      "status": "Completed"
+      "status": "Upcoming",
+      "meetLink": "https://meet.google.com/new"
     },
     {
-      "id": "m_1779904819815",
-      "userId": "1",
-      "title": "Internship meet 2 ",
-      "date": "2026-05-31",
-      "time": "14:29",
-      "agenda": "to discuss about project with vrukshani ma'am",
-      "participants": "Abhay, Vibhanshu ",
+      "id": "m3",
+      "userId": "1779907415345",
+      "groupId": "g_brand_review",
+      "title": "Color Palette Review",
+      "date": "2026-06-12",
+      "time": "11:00",
+      "agenda": "Inspect dark cyan vs secondary color contrasts and approve design assets.",
+      "participants": "Vibhanshu G, Abhay Kamble",
+      "status": "Upcoming",
+      "meetLink": "https://meet.google.com/new"
+    },
+    {
+      "id": "m4",
+      "userId": "2",
+      "groupId": "g_qa_sync",
+      "title": "Production Deployment QA",
+      "date": "2026-06-15",
+      "time": "16:00",
+      "agenda": "Execute end-to-end verification tests of the Kanban board, Chat polling, and Calendar widgets.",
+      "participants": "Sneha Shinde, Abhay Kamble, Vibhanshu G",
       "status": "Upcoming",
       "meetLink": "https://meet.google.com/new"
     }
@@ -66,22 +144,76 @@
     {
       "id": "t1",
       "userId": "1",
+      "groupId": "g_1780573099277",
+      "assignedMemberId": "1779907415345",
       "title": "Setup JSON Local Database",
       "description": "Establish a robust file-based local storage system with helper endpoints for seamless persistence.",
-      "assignedMember": "Abhay Kamble",
-      "deadline": "2026-05-29",
+      "assignedMember": "Vibhanshu G",
+      "deadline": "2026-06-10",
       "priority": "High",
       "status": "Pending"
     },
     {
       "id": "t2",
       "userId": "1",
+      "groupId": "g_1780573099277",
+      "assignedMemberId": "2",
       "title": "Verify Color Scheme Matching",
-      "description": "Review newly designed pages to ensure perfect green and black aesthetic alignment with no layout changes.",
-      "assignedMember": "Rohit Patil",
-      "deadline": "2026-05-30",
+      "description": "Review newly designed pages to ensure perfect dark cyan aesthetics alignment.",
+      "assignedMember": "Sneha Shinde",
+      "deadline": "2026-06-12",
       "priority": "Medium",
+      "status": "In Progress"
+    },
+    {
+      "id": "t3",
+      "userId": "1779907415345",
+      "groupId": "g_brand_review",
+      "assignedMemberId": "1",
+      "title": "Develop Icon Asset Pipeline",
+      "description": "Export SVGs for dashboard widgets and integrate custom icon components in Next.js pages.",
+      "assignedMember": "Abhay Kamble",
+      "deadline": "2026-06-15",
+      "priority": "High",
+      "status": "In Progress"
+    },
+    {
+      "id": "t4",
+      "userId": "2",
+      "groupId": "g_qa_sync",
+      "assignedMemberId": "1",
+      "title": "Stress Test API Endpoints",
+      "description": "Run API benchmark scenarios for chat messages GET/POST and check file system performance.",
+      "assignedMember": "Abhay Kamble",
+      "deadline": "2026-06-18",
+      "priority": "Low",
       "status": "Pending"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg_demo1",
+      "groupId": "g_1780573099277",
+      "userId": "1",
+      "userName": "Abhay Kamble",
+      "content": "Hi everyone! Welcome to the Internship week 3 group. Let's use this board for updates.",
+      "timestamp": "2026-06-05T04:00:00.000Z"
+    },
+    {
+      "id": "msg_demo2",
+      "groupId": "g_1780573099277",
+      "userId": "1779907415345",
+      "userName": "Vibhanshu G",
+      "content": "Thanks Abhay! I will start working on the JSON database schema setup.",
+      "timestamp": "2026-06-05T04:02:00.000Z"
+    },
+    {
+      "id": "msg_demo3",
+      "groupId": "g_brand_review",
+      "userId": "1779907415345",
+      "userName": "Vibhanshu G",
+      "content": "Hello team, let's coordinate design reviews here. Abhay, I assigned the Icon Pipeline task to you.",
+      "timestamp": "2026-06-05T04:05:00.000Z"
     }
   ]
 }
