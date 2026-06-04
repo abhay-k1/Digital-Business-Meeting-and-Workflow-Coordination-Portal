@@ -13,12 +13,30 @@ export type ServicesBlockType = {
 const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
   const onCardContainerClick = useCallback(() => {
     const session = getSession();
-    window.location.href = session ? "/meetings" : "/login";
+    if (!session) {
+      window.location.href = "/login?redirect=" + encodeURIComponent("/dashboard?redirect=/meetings");
+    } else {
+      const activeGroup = localStorage.getItem("active_group_id");
+      if (!activeGroup) {
+        window.location.href = "/dashboard?redirect=/meetings";
+      } else {
+        window.location.href = "/meetings";
+      }
+    }
   }, []);
 
   const onCardContainerClick1 = useCallback(() => {
     const session = getSession();
-    window.location.href = session ? "/tasks" : "/login";
+    if (!session) {
+      window.location.href = "/login?redirect=" + encodeURIComponent("/dashboard?redirect=/tasks");
+    } else {
+      const activeGroup = localStorage.getItem("active_group_id");
+      if (!activeGroup) {
+        window.location.href = "/dashboard?redirect=/tasks";
+      } else {
+        window.location.href = "/tasks";
+      }
+    }
   }, []);
 
   const onCardContainerClick2 = useCallback(() => {
@@ -33,7 +51,16 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
 
   const onBookSyncClick = useCallback(() => {
     const session = getSession();
-    window.location.href = session ? "/meetings" : "/login";
+    if (!session) {
+      window.location.href = "/login?redirect=" + encodeURIComponent("/dashboard?redirect=/meetings");
+    } else {
+      const activeGroup = localStorage.getItem("active_group_id");
+      if (!activeGroup) {
+        window.location.href = "/dashboard?redirect=/meetings";
+      } else {
+        window.location.href = "/meetings";
+      }
+    }
   }, []);
 
   return (
@@ -79,6 +106,8 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
           illustration="/Illustration4@2x.png"
           property1="Green"
           label="Meeting Coordination"
+          label1="Sync"
+          label2="Meetings"
           showLabel
           labelVisible
           labelWidth="unset"
@@ -96,6 +125,8 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
           illustrationIconHeight="147.6px"
           property1="White"
           label="Task Allocation"
+          label1="Allocate"
+          label2="Workloads"
           showLabel
           labelVisible
           labelWidth="unset"
@@ -113,6 +144,8 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
           illustrationIconHeight="210px"
           property1="White"
           label="Team Workspace"
+          label1="Manage"
+          label2="Collaboration"
           showLabel
           labelVisible
           labelWidth="unset"
@@ -130,6 +163,8 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
           illustrationIconHeight="195.9px"
           property1="Green"
           label="Metrics Dashboard"
+          label1="Monitor"
+          label2="Analytics"
           showLabel
           labelVisible
           labelWidth="unset"

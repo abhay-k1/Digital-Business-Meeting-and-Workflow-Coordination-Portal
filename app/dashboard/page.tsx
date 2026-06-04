@@ -55,12 +55,26 @@ export default function DashboardPage() {
   useEffect(() => {
     const user = getSession();
     if (!user) {
-      window.location.href = "/login";
+      const currentQuery = typeof window !== "undefined" ? window.location.search : "";
+      window.location.href = `/login?redirect=${encodeURIComponent("/dashboard" + currentQuery)}`;
       return;
     }
     setSession(user);
 
     const savedGroupId = localStorage.getItem("active_group_id");
+    
+    // If user already has an active workspace group selected AND has a pending redirect URL, send them straight there.
+    if (savedGroupId) {
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const red = params.get("redirect");
+        if (red) {
+          window.location.href = red;
+          return;
+        }
+      }
+    }
+
     setActiveGroupId(savedGroupId);
 
     fetchGroups(user.id, savedGroupId);
@@ -118,6 +132,17 @@ export default function DashboardPage() {
     localStorage.setItem("active_group_id", group.id);
     setActiveGroupId(group.id);
     setActiveGroup(group);
+    
+    // Forward user if a redirect target is queued in the query parameters
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const red = params.get("redirect");
+      if (red) {
+        window.location.href = red;
+        return;
+      }
+    }
+
     setLoading(true);
     if (session) {
       fetchWorkspaceData(session.id, group.id);

@@ -10,12 +10,24 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState("/dashboard");
 
   useEffect(() => {
-    // If user is already logged in, redirect to dashboard.
+    // Retrieve potential redirection path from search query
+    let targetRedirect = "/dashboard";
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const red = params.get("redirect");
+      if (red) {
+        targetRedirect = red;
+      }
+    }
+    setRedirectUrl(targetRedirect);
+
+    // If user is already logged in, redirect to target.
     const session = getSession();
     if (session) {
-      window.location.href = "/dashboard";
+      window.location.href = targetRedirect;
     }
   }, []);
 
@@ -37,7 +49,7 @@ export default function LoginPage() {
       }
 
       saveSession(data.user);
-      window.location.href = "/dashboard";
+      window.location.href = redirectUrl;
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -52,7 +64,7 @@ export default function LoginPage() {
       <main className="self-stretch flex flex-col items-center justify-center px-5 py-10">
         <div className="w-full max-w-[480px] shadow-[0_10px_35px_rgba(15,23,42,0.03)] rounded-[24px] bg-white border-slate-200 border-solid border-[1px] box-border p-10 flex flex-col gap-8 mq450:px-6 mq450:py-8">
           <div className="flex flex-col gap-2 text-center">
-            <h1 className="m-0 text-4xl font-extrabold text-grays-black mq450:text-3xl">
+            <h1 className="m-0 text-4xl font-extrabold text-grays-black mq450:text-3xl font-['Space_Grotesk']">
               Welcome Back
             </h1>
             <p className="m-0 text-base font-['DM_Sans'] text-slate-500">
@@ -61,7 +73,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
+            <div className="bg-red-50 text-red-700 px-5 py-3 rounded-[10px] border border-solid border-red-200 text-sm font-medium">
               {error}
             </div>
           )}
@@ -77,7 +89,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@example.com"
-                className="w-full bg-[#fff] border-slate-200 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-[#999] focus:ring-2 focus:ring-[#475569] transition duration-150"
+                className="w-full bg-[#fff] border-slate-250 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-slate-400 focus:border-[#097C87] transition duration-150"
               />
             </div>
 
@@ -91,14 +103,14 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
-                className="w-full bg-[#fff] border-slate-200 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-[#999] focus:ring-2 focus:ring-[#475569] transition duration-150"
+                className="w-full bg-[#fff] border-slate-250 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-slate-400 focus:border-[#097C87] transition duration-150"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="cursor-pointer border-none py-4 px-6 bg-dark hover:bg-slate-800 text-white font-bold rounded-xl flex items-center justify-center text-base font-['Space_Grotesk'] transition duration-200 disabled:opacity-50 mt-4 shadow-sm"
+              className="cursor-pointer border-none py-4 px-6 bg-[#097C87] hover:bg-[#23CED9] text-white font-bold rounded-xl flex items-center justify-center text-base font-['Space_Grotesk'] transition duration-200 disabled:opacity-50 mt-4 shadow-sm"
             >
               {loading ? "Logging in..." : "Login"}
             </button>
@@ -106,7 +118,7 @@ export default function LoginPage() {
 
           <div className="text-center font-['DM_Sans'] text-sm text-slate-600">
             Don&apos;t have an account?{" "}
-            <a href="/register" className="text-[#475569] font-bold underline hover:text-slate-800">
+            <a href="/register" className="text-[#097C87] font-bold underline hover:text-[#23CED9]">
               Register here
             </a>
           </div>
