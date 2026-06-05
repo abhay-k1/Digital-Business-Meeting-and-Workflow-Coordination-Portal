@@ -46,17 +46,9 @@ export default function DashboardPage() {
   const [sendingMessage, setSendingMessage] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Group states
-  const [groups, setGroups] = useState<Group[]>([]);
+  // Active Group states
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [activeGroup, setActiveGroup] = useState<Group | null>(null);
-
-  // Form states
-  const [newGroupName, setNewGroupName] = useState("");
-  const [inviteCode, setInviteCode] = useState("");
-  const [groupError, setGroupError] = useState("");
-  const [groupSuccess, setGroupSuccess] = useState("");
-  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     const user = getSession();
@@ -68,48 +60,45 @@ export default function DashboardPage() {
     setSession(user);
 
     const savedGroupId = localStorage.getItem("active_group_id");
-    
+    if (!savedGroupId) {
+      const currentQuery = typeof window !== "undefined" ? window.location.search : "";
+      window.location.href = `/groups${currentQuery}`;
+      return;
+    }
+
     // If user already has an active workspace group selected AND has a pending redirect URL, send them straight there.
-    if (savedGroupId) {
-      if (typeof window !== "undefined") {
-        const params = new URLSearchParams(window.location.search);
-        const red = params.get("redirect");
-        if (red) {
-          window.location.href = red;
-          return;
-        }
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const red = params.get("redirect");
+      if (red) {
+        window.location.href = red;
+        return;
       }
     }
 
     setActiveGroupId(savedGroupId);
-
-    fetchGroups(user.id, savedGroupId);
+    fetchGroupDetails(user.id, savedGroupId);
   }, []);
 
-  const fetchGroups = async (userId: string, currentGroupId: string | null) => {
+  const fetchGroupDetails = async (userId: string, groupId: string) => {
     try {
+      setLoading(true);
       const res = await fetch(`/api/groups?userId=${userId}`);
       const data = await res.json();
       if (res.ok) {
         const userGroups: Group[] = data.groups || [];
-        setGroups(userGroups);
-
-        if (currentGroupId) {
-          const matched = userGroups.find((g) => g.id === currentGroupId);
-          if (matched) {
-            setActiveGroup(matched);
-            await fetchWorkspaceData(userId, currentGroupId);
-            return;
-          }
+        const matched = userGroups.find((g) => g.id === groupId);
+        if (matched) {
+          setActiveGroup(matched);
+          await fetchWorkspaceData(userId, groupId);
+          return;
         }
       }
-      // If group doesn't exist anymore or no active group is selected
+      // If group doesn't exist anymore or user is not a member, clear selection and redirect to groups page
       localStorage.removeItem("active_group_id");
-      setActiveGroupId(null);
-      setActiveGroup(null);
-      setLoading(false);
+      window.location.href = "/groups";
     } catch (err) {
-      console.error("Error fetching groups:", err);
+      console.error("Error fetching group details:", err);
       setLoading(false);
     }
   };
@@ -128,7 +117,6 @@ export default function DashboardPage() {
 
   const fetchWorkspaceData = async (userId: string, groupId: string) => {
     try {
-      setLoading(true);
       const [meetingsRes, tasksRes, messagesRes] = await Promise.all([
         fetch(`/api/meetings?userId=${userId}&groupId=${groupId}`),
         fetch(`/api/tasks?userId=${userId}&groupId=${groupId}`),
@@ -147,36 +135,6 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSelectGroup = (group: Group) => {
-    localStorage.setItem("active_group_id", group.id);
-    setActiveGroupId(group.id);
-    setActiveGroup(group);
-    
-    // Forward user if a redirect target is queued in the query parameters
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const red = params.get("redirect");
-      if (red) {
-        window.location.href = red;
-        return;
-      }
-    }
-
-    setLoading(true);
-    if (session) {
-      fetchWorkspaceData(session.id, group.id);
-    }
-  };
-
-  const handleSwitchGroup = () => {
-    localStorage.removeItem("active_group_id");
-    setActiveGroupId(null);
-    setActiveGroup(null);
-    setMeetings([]);
-    setTasks([]);
-    setMessages([]);
   };
 
   useEffect(() => {
@@ -230,79 +188,7 @@ export default function DashboardPage() {
     }
   };
 
-  const handleCreateGroup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newGroupName.trim() || !session) return;
-
-    setGroupError("");
-    setGroupSuccess("");
-    setActionLoading(true);
-
-    try {
-      const res = await fetch("/api/groups", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-user-id": session.id,
-        },
-        body: JSON.stringify({ name: newGroupName }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to create group");
-
-      setGroupSuccess(`Group "${data.group.name}" created successfully! Invite Code: ${data.group.code}`);
-      setNewGroupName("");
-      
-      // Select the newly created group
-      handleSelectGroup(data.group);
-      
-      // Refresh groups list
-      fetchGroups(session.id, data.group.id);
-    } catch (err: any) {
-      setGroupError(err.message || "Something went wrong");
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleJoinGroup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inviteCode.trim() || !session) return;
-
-    setGroupError("");
-    setGroupSuccess("");
-    setActionLoading(true);
-
-    try {
-      const res = await fetch("/api/groups", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "x-user-id": session.id,
-        },
-        body: JSON.stringify({ code: inviteCode }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to join group");
-
-      setGroupSuccess(`Successfully joined group "${data.group.name}"!`);
-      setInviteCode("");
-      
-      // Select the joined group
-      handleSelectGroup(data.group);
-      
-      // Refresh groups list
-      fetchGroups(session.id, data.group.id);
-    } catch (err: any) {
-      setGroupError(err.message || "Something went wrong");
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  if (loading || !session) {
+  if (loading || !session || !activeGroup) {
     return (
       <div className="w-full min-h-screen flex flex-col items-center justify-center bg-slate-50 font-['Space_Grotesk'] text-slate-800">
         <div className="flex flex-col items-center gap-4">
@@ -318,435 +204,287 @@ export default function DashboardPage() {
   const pendingTasks = tasks.filter((t) => t.status !== "Completed");
   const completedTasksCount = tasks.filter((t) => t.status === "Completed").length;
   const highPriorityTasksCount = tasks.filter((t) => t.priority === "High" && t.status !== "Completed").length;
-  const isManager = activeGroup ? activeGroup.managerId === session.id : false;
+  const isManager = activeGroup.managerId === session.id;
 
   return (
     <div className="w-full min-h-screen relative bg-slate-50/50 overflow-hidden flex flex-col items-start pt-[61px] px-0 pb-0 box-border gap-20 leading-[normal] tracking-[normal] text-left font-['Space_Grotesk']">
       <FrameComponent />
 
-      {!activeGroupId || !activeGroup ? (
-        /* GROUPS SELECTOR DASHBOARD SCREEN */
-        <main className="self-stretch flex flex-col gap-12 px-16 box-border max-w-full mq800:px-6">
-          <div className="flex flex-col gap-2">
+      {/* ACTIVE GROUP WORKSPACE DASHBOARD SCREEN */}
+      <main className="self-stretch flex flex-col gap-12 px-16 box-border max-w-full mq800:px-6">
+        {/* Active Group Header */}
+        <div className="w-full flex justify-between items-center bg-white border-l-4 border-l-[#5F8D9E] border-y border-r border-solid border-slate-200 p-6 rounded-2xl shadow-[0_4px_25px_-5px_rgba(95,141,158,0.05)] flex-wrap gap-4">
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs uppercase tracking-wider text-slate-400 font-bold">Active Workspace</span>
+            <h2 className="m-0 text-2xl font-bold text-slate-900 flex items-center gap-3 font-['Space_Grotesk']">
+              🏢 {activeGroup.name}
+            </h2>
+            <div className="flex items-center gap-4 text-sm text-slate-500 font-['DM_Sans'] mt-1">
+              <span>Invite Code: <strong className="font-mono bg-[#5F8D9E]/10 border border-solid border-[#5F8D9E]/20 px-2.5 py-0.5 rounded text-[#5F8D9E] font-bold">{activeGroup.code}</strong></span>
+              <span>Role: <strong className="text-slate-700 font-medium">{isManager ? "Manager (Creator)" : "Employee / Member"}</strong></span>
+            </div>
+          </div>
+        </div>
+
+        {/* Welcome and Nav header */}
+        <div className="flex items-center justify-between gap-10 max-w-full flex-wrap">
+          <div className="flex items-center gap-10 max-w-full mq800:flex-wrap">
             <Heading
-              label="Choose Team"
-              label1="Workspace"
+              label="Team"
+              label1="Dashboard"
               showLabel={true}
             />
-            <p className="m-0 text-lg text-slate-600 font-['DM_Sans'] max-w-3xl mt-1">
-              Select an existing group to view allocated tasks and meetings, or create a new team workspace.
-            </p>
+            <h2 className="m-0 text-2xl font-medium text-slate-900 font-['Space_Grotesk']">
+              Welcome back, <span className="font-bold text-slate-800 bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 px-3.5 py-1 rounded-lg">{session.name}</span>
+            </h2>
           </div>
 
-          {(groupError || groupSuccess) && (
-            <div className="w-full flex flex-col gap-3">
-              {groupError && (
-                <div className="bg-red-50 text-red-700 px-5 py-3.5 rounded-xl border border-solid border-red-100 text-sm font-medium">
-                  ⚠️ {groupError}
-                </div>
-              )}
-              {groupSuccess && (
-                <div className="bg-emerald-50 text-emerald-800 px-5 py-3.5 rounded-xl border border-solid border-emerald-200 text-sm font-medium">
-                  ✅ {groupSuccess}
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="w-full flex items-start gap-12 mq1125:flex-col">
-            {/* Left Side: Groups List */}
-            <div className="w-[50%] flex flex-col gap-6 mq1125:w-full">
-              <h2 className="m-0 text-2xl font-bold text-slate-900 tracking-tight">
-                Your Active Groups ({groups.length})
-              </h2>
-
-              {groups.length === 0 ? (
-                <div className="w-full rounded-2xl border border-dashed border-slate-350 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
-                  You haven&apos;t created or joined any collaboration groups yet. Get started on the right!
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4 max-h-[600px] overflow-y-auto pr-2">
-                  {groups.map((group) => {
-                    const isGroupManager = group.managerId === session.id;
-                    return (
-                      <div
-                        key={group.id}
-                        className="shadow-[0_4px_20px_-4px_rgba(95,141,158,0.06)] rounded-2xl bg-white border-l-4 border-l-[#5F8D9E] border-y border-r border-solid border-slate-200/80 p-6 flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300 cursor-pointer"
-                        onClick={() => handleSelectGroup(group)}
-                      >
-                        <div className="flex flex-col gap-2.5 min-w-0">
-                          <h3 className="m-0 text-xl font-bold text-slate-900 truncate font-['Space_Grotesk']">
-                            {group.name}
-                          </h3>
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500 font-['DM_Sans']">
-                            <span>👑 Manager: <strong className="text-slate-700 font-medium">{isGroupManager ? "You" : group.members.find(m => m.id === group.managerId)?.name || "Unknown"}</strong></span>
-                            <span>👥 Members: <strong className="text-slate-700 font-medium">{group.members.length}</strong></span>
-                          </div>
-                          <span className="inline-block text-xs bg-[#5F8D9E]/10 border border-solid border-[#5F8D9E]/20 text-[#5F8D9E] px-2.5 py-1 rounded-md w-fit font-bold font-mono tracking-wider">
-                            CODE: {group.code}
-                          </span>
-                        </div>
-                        <button
-                          className="cursor-pointer border-none bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:shadow transition-all duration-200 shrink-0"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSelectGroup(group);
-                          }}
-                        >
-                          Enter &rarr;
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Right Side: Create or Join Actions */}
-            <div className="w-[50%] flex flex-col gap-8 mq1125:w-full">
-              {/* Create Group Form */}
-              <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 p-8 flex flex-col gap-4">
-                <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">Create a Group (Manager)</h3>
-                <p className="m-0 text-sm text-slate-500 font-['DM_Sans'] leading-relaxed">
-                  Set up a private group. As the manager, you will be able to schedule meetings, generate invite codes, and allocate tasks to employee members.
-                </p>
-                <form onSubmit={handleCreateGroup} className="flex flex-col gap-4 mt-2">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-semibold text-slate-700">Group Workspace Name</label>
-                    <input
-                      type="text"
-                      required
-                      disabled={actionLoading}
-                      value={newGroupName}
-                      onChange={(e) => setNewGroupName(e.target.value)}
-                      placeholder="e.g. Quality Assurance, Engineering"
-                      className="bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#5F8D9E] transition"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={actionLoading}
-                    className="cursor-pointer border-none py-3.5 px-6 bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white font-bold rounded-xl hover:shadow transition-all duration-200 disabled:opacity-50"
-                  >
-                    {actionLoading ? "Creating..." : "Create Group & Enter"}
-                  </button>
-                </form>
-              </div>
-
-              {/* Join Group Form */}
-              <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border border-solid border-slate-200/80 p-8 flex flex-col gap-4">
-                <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">Join a Group (Employee)</h3>
-                <p className="m-0 text-sm text-slate-500 font-['DM_Sans'] leading-relaxed">
-                  Enter the unique 8-character invite code provided by your manager to join the team, view meetings, and perform assigned tasks.
-                </p>
-                <form onSubmit={handleJoinGroup} className="flex flex-col gap-4 mt-2">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-semibold text-slate-700">Invite Code</label>
-                    <input
-                      type="text"
-                      required
-                      disabled={actionLoading}
-                      value={inviteCode}
-                      onChange={(e) => setInviteCode(e.target.value)}
-                      placeholder="e.g. GRP-4819"
-                      className="bg-white border border-solid border-slate-200 rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#5F8D9E] transition"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={actionLoading}
-                    className="cursor-pointer border border-solid border-slate-200 py-3.5 px-6 bg-white hover:bg-slate-50 text-slate-750 font-bold rounded-xl hover:shadow transition-all duration-200 disabled:opacity-50"
-                  >
-                    {actionLoading ? "Joining..." : "Join Group & Enter"}
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </main>
-      ) : (
-        /* ACTIVE GROUP WORKSPACE DASHBOARD SCREEN */
-        <main className="self-stretch flex flex-col gap-12 px-16 box-border max-w-full mq800:px-6">
-          {/* Active Group Header */}
-          <div className="w-full flex justify-between items-center bg-white border-l-4 border-l-[#5F8D9E] border-y border-r border-solid border-slate-200 p-6 rounded-2xl shadow-[0_4px_25px_-5px_rgba(95,141,158,0.05)] flex-wrap gap-4">
-            <div className="flex flex-col gap-1.5">
-              <span className="text-xs uppercase tracking-wider text-slate-400 font-bold">Active Workspace</span>
-              <h2 className="m-0 text-2xl font-bold text-slate-900 flex items-center gap-3 font-['Space_Grotesk']">
-                🏢 {activeGroup.name}
-              </h2>
-              <div className="flex items-center gap-4 text-sm text-slate-500 font-['DM_Sans'] mt-1">
-                <span>Invite Code: <strong className="font-mono bg-[#5F8D9E]/10 border border-solid border-[#5F8D9E]/20 px-2.5 py-0.5 rounded text-[#5F8D9E] font-bold">{activeGroup.code}</strong></span>
-                <span>Role: <strong className="text-slate-700 font-medium">{isManager ? "Manager (Creator)" : "Employee / Member"}</strong></span>
-              </div>
-            </div>
-            <button
-              onClick={handleSwitchGroup}
-              className="cursor-pointer border border-solid border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl px-5 py-3 text-sm hover:shadow transition-all duration-200"
-            >
-              Switch Group
-            </button>
-          </div>
-
-          {/* Welcome and Nav header */}
-          <div className="flex items-center justify-between gap-10 max-w-full flex-wrap">
-            <div className="flex items-center gap-10 max-w-full mq800:flex-wrap">
-              <Heading
-                label="Team"
-                label1="Dashboard"
-                showLabel={true}
-              />
-              <h2 className="m-0 text-2xl font-medium text-slate-900 font-['Space_Grotesk']">
-                Welcome back, <span className="font-bold text-slate-800 bg-[#23CED9]/10 border border-solid border-[#23CED9]/20 px-3.5 py-1 rounded-lg">{session.name}</span>
-              </h2>
-            </div>
-
-            <div className="flex gap-4">
-              {isManager && (
-                <>
-                  <a
-                    href="/meetings"
-                    className="cursor-pointer border-none bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white rounded-xl px-6 py-3.5 font-bold text-base transition duration-200 shadow-sm hover:shadow"
-                  >
-                    Schedule Meeting
-                  </a>
-                  <a
-                    href="/tasks"
-                    className="cursor-pointer border border-solid border-[#5F8D9E]/30 bg-white text-[#5F8D9E] hover:bg-[#5F8D9E]/5 rounded-xl px-6 py-3.5 font-bold text-base transition duration-200 shadow-sm hover:shadow"
-                  >
-                    Allocate Task
-                  </a>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Dynamic Analytics Summary Cards (Integrates Custom Colors) */}
-          <section className="grid grid-cols-4 gap-6 w-full mq1125:grid-cols-2 mq800:grid-cols-1">
-            <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
-              <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Upcoming Meetings</span>
-              <span className="text-5xl font-bold text-[#5F8D9E] tracking-tight">{upcomingMeetings.length}</span>
-              <span className="text-xs font-['DM_Sans'] text-slate-400">Total scheduled: {meetings.length}</span>
-            </div>
-
-            <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
-              <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Pending Tasks</span>
-              <span className="text-5xl font-bold text-slate-700 tracking-tight">{pendingTasks.length}</span>
-              <span className="text-xs font-['DM_Sans'] text-slate-400">Completed tasks: {completedTasksCount}</span>
-            </div>
-
-            <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
-              <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Critical Hotspots</span>
-              <span className="text-5xl font-bold text-red-650 tracking-tight">{highPriorityTasksCount}</span>
-              <span className="text-xs font-['DM_Sans'] text-slate-400">High priority pending tasks</span>
-            </div>
-
-            {/* Glowing Gradient Completion card */}
-            <div className="shadow-[0_8px_30px_rgba(95,141,158,0.08)] rounded-2xl bg-gradient-to-br from-[#5F8D9E] to-[#8FB1BD] p-8 flex flex-col gap-2 text-white hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
-              <span className="text-sm font-semibold text-white/90 font-['DM_Sans']">Main Completion</span>
-              <span className="text-5xl font-bold text-white tracking-tight">
-                {tasks.length > 0 ? Math.round((completedTasksCount / tasks.length) * 100) : 0}%
-              </span>
-              <span className="text-xs font-['DM_Sans'] text-white/80">Based on allocated workloads</span>
-            </div>
-          </section>
-
-          {/* Dynamic Split Listings (Meetings on Left, Tasks on Right) */}
-          <section className="w-full flex gap-10 items-start mq1125:flex-col">
-            {/* Upcoming Meetings Panel */}
-            <div className="w-[50%] flex flex-col gap-6 mq1125:w-full">
-              <div className="flex justify-between items-center">
-                <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight text-slate-900">Upcoming Team Syncs</h3>
-                {isManager && (
-                  <a href="/meetings" className="text-sm text-[#5F8D9E] font-bold hover:text-[#7CA7B8] transition-colors no-underline">
-                    Manage Meetings &rarr;
-                  </a>
-                )}
-              </div>
-
-              {upcomingMeetings.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
-                  No upcoming meetings scheduled for this group.
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4 max-h-[500px] overflow-y-auto pr-1">
-                  {upcomingMeetings.map((meeting) => (
-                    <div
-                      key={meeting.id}
-                      className="shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)] rounded-xl bg-white border border-solid border-slate-200/80 p-5 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col gap-3"
-                    >
-                      <div className="flex justify-between items-start gap-2">
-                        <h4 className="m-0 text-lg font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">{meeting.title}</h4>
-                        <span className="text-xs bg-[#5F8D9E]/10 border border-solid border-[#5F8D9E]/20 text-[#5F8D9E] px-2.5 py-1 rounded-md font-bold font-mono">
-                          {meeting.time}
-                        </span>
-                      </div>
-                      <p className="m-0 text-sm text-slate-500 font-['DM_Sans'] line-clamp-2 leading-relaxed">
-                        {meeting.agenda}
-                      </p>
-                      <div className="text-xs text-slate-400 font-['DM_Sans'] border-t border-solid border-slate-100 pt-2 flex justify-between">
-                        <span>👤 {meeting.participants.split(",")[0]} {meeting.participants.split(",").length > 1 ? `+${meeting.participants.split(",").length - 1} more` : ""}</span>
-                        <span className="font-semibold text-slate-700">📅 {meeting.date}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Active Tasks Panel */}
-            <div className="w-[50%] flex flex-col gap-6 mq1125:w-full">
-              <div className="flex justify-between items-center">
-                <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight text-slate-900">
-                  {isManager ? "Active Group Workloads" : "Your Assigned Workloads"}
-                </h3>
-                <a href="/tasks" className="text-sm text-[#5F8D9E] font-bold hover:text-[#7CA7B8] transition-colors no-underline">
-                  {isManager ? "Manage Tasks &rarr;" : "View Task List &rarr;"}
+          <div className="flex gap-4">
+            {isManager && (
+              <>
+                <a
+                  href="/meetings"
+                  className="cursor-pointer border-none bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white rounded-xl px-6 py-3.5 font-bold text-base transition duration-200 shadow-sm hover:shadow"
+                >
+                  Schedule Meeting
                 </a>
-              </div>
+                <a
+                  href="/tasks"
+                  className="cursor-pointer border border-solid border-[#5F8D9E]/30 bg-white text-[#5F8D9E] hover:bg-[#5F8D9E]/5 rounded-xl px-6 py-3.5 font-bold text-base transition duration-200 shadow-sm hover:shadow"
+                >
+                  Allocate Task
+                </a>
+              </>
+            )}
+          </div>
+        </div>
 
-              {pendingTasks.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
-                  No pending workloads. All syncs completed!
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4 max-h-[500px] overflow-y-auto pr-1">
-                  {pendingTasks.map((task) => (
-                    <div
-                      key={task.id}
-                      className="shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)] rounded-xl bg-white border border-solid border-slate-200/80 p-5 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col gap-3"
-                    >
-                      <div className="flex justify-between items-start gap-2">
-                        <h4 className="m-0 text-lg font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">{task.title}</h4>
-                        <span
-                          className={`text-xs px-2.5 py-1 rounded-md font-semibold border border-solid ${
-                            task.priority === "High"
-                              ? "bg-red-50 text-red-650 border-red-100"
-                              : task.priority === "Medium"
-                              ? "bg-orange-50 text-orange-600 border-orange-100"
-                              : "bg-[#A1CCA6]/15 text-[#097C87] border-[#A1CCA6]/30"
-                          }`}
-                        >
-                          {task.priority}
-                        </span>
-                      </div>
-                      <p className="m-0 text-sm text-slate-500 font-['DM_Sans'] line-clamp-2 leading-relaxed">
-                        {task.description}
-                      </p>
-                      <div className="text-xs text-slate-400 font-['DM_Sans'] border-t border-solid border-slate-100 pt-2 flex justify-between items-center">
-                        <span>👤 {task.assignedMember}</span>
-                        <span className={`font-semibold px-2 py-0.5 rounded text-xs ${
-                          task.status === "In Progress" ? "bg-[#5F8D9E]/10 text-[#5F8D9E] border border-solid border-[#5F8D9E]/20" : "bg-slate-50 text-slate-500 border border-solid border-slate-150"
-                        }`}>{task.status}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+        {/* Dynamic Analytics Summary Cards (Integrates Custom Colors) */}
+        <section className="grid grid-cols-4 gap-6 w-full mq1125:grid-cols-2 mq800:grid-cols-1">
+          <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
+            <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Upcoming Meetings</span>
+            <span className="text-5xl font-bold text-[#5F8D9E] tracking-tight">{upcomingMeetings.length}</span>
+            <span className="text-xs font-['DM_Sans'] text-slate-400">Total scheduled: {meetings.length}</span>
+          </div>
+
+          <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
+            <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Pending Tasks</span>
+            <span className="text-5xl font-bold text-slate-700 tracking-tight">{pendingTasks.length}</span>
+            <span className="text-xs font-['DM_Sans'] text-slate-400">Completed tasks: {completedTasksCount}</span>
+          </div>
+
+          <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
+            <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Critical Hotspots</span>
+            <span className="text-5xl font-bold text-red-650 tracking-tight">{highPriorityTasksCount}</span>
+            <span className="text-xs font-['DM_Sans'] text-slate-400">High priority pending tasks</span>
+          </div>
+
+          {/* Glowing Gradient Completion card */}
+          <div className="shadow-[0_8px_30px_rgba(95,141,158,0.08)] rounded-2xl bg-gradient-to-br from-[#5F8D9E] to-[#8FB1BD] p-8 flex flex-col gap-2 text-white hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+            <span className="text-sm font-semibold text-white/90 font-['DM_Sans']">Main Completion</span>
+            <span className="text-5xl font-bold text-white tracking-tight">
+              {tasks.length > 0 ? Math.round((completedTasksCount / tasks.length) * 100) : 0}%
+            </span>
+            <span className="text-xs font-['DM_Sans'] text-white/80">Based on allocated workloads</span>
+          </div>
+        </section>
+
+        {/* Dynamic Split Listings (Meetings on Left, Tasks on Right) */}
+        <section className="w-full flex gap-10 items-start mq1125:flex-col">
+          {/* Upcoming Meetings Panel */}
+          <div className="w-[50%] flex flex-col gap-6 mq1125:w-full">
+            <div className="flex justify-between items-center">
+              <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">Upcoming Team Syncs</h3>
+              {isManager && (
+                <a href="/meetings" className="text-sm text-[#5F8D9E] font-bold hover:text-[#7CA7B8] transition-colors no-underline">
+                  Manage Meetings &rarr;
+                </a>
               )}
             </div>
-          </section>
 
-          {/* Group Discussion Board Section */}
-          <section className="w-full flex flex-col gap-6 bg-white border border-solid border-slate-200/80 rounded-2xl p-8 shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] mb-12">
-            <div className="flex justify-between items-center border-b border-solid border-slate-100 pb-4">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">💬</span>
-                <div>
-                  <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">
-                    Group Discussion Board
-                  </h3>
-                  <p className="m-0 text-xs text-slate-500 font-['DM_Sans'] mt-0.5">
-                    Real-time collaborative chat for members of <strong>{activeGroup.name}</strong>
-                  </p>
-                </div>
+            {upcomingMeetings.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
+                No upcoming meetings scheduled for this group.
               </div>
-              <span className="text-xs bg-[#5F8D9E]/15 border border-solid border-[#5F8D9E]/35 text-[#5F8D9E] px-2.5 py-1 rounded-full font-bold font-mono">
-                {messages.length} messages
-              </span>
+            ) : (
+              <div className="flex flex-col gap-4 max-h-[500px] overflow-y-auto pr-1">
+                {upcomingMeetings.map((meeting) => (
+                  <div
+                    key={meeting.id}
+                    className="shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)] rounded-xl bg-white border border-solid border-slate-200/80 p-5 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col gap-3"
+                  >
+                    <div className="flex justify-between items-start gap-2">
+                      <h4 className="m-0 text-lg font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">{meeting.title}</h4>
+                      <span className="text-xs bg-[#5F8D9E]/10 border border-solid border-[#5F8D9E]/20 text-[#5F8D9E] px-2.5 py-1 rounded-md font-bold font-mono">
+                        {meeting.time}
+                      </span>
+                    </div>
+                    <p className="m-0 text-sm text-slate-500 font-['DM_Sans'] line-clamp-2 leading-relaxed">
+                      {meeting.agenda}
+                    </p>
+                    <div className="text-xs text-slate-400 font-['DM_Sans'] border-t border-solid border-slate-100 pt-2 flex justify-between">
+                      <span>👤 {meeting.participants.split(",")[0]} {meeting.participants.split(",").length > 1 ? `+${meeting.participants.split(",").length - 1} more` : ""}</span>
+                      <span className="font-semibold text-slate-700">📅 {meeting.date}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Active Tasks Panel */}
+          <div className="w-[50%] flex flex-col gap-6 mq1125:w-full">
+            <div className="flex justify-between items-center">
+              <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight">
+                {isManager ? "Active Group Workloads" : "Your Assigned Workloads"}
+              </h3>
+              <a href="/tasks" className="text-sm text-[#5F8D9E] font-bold hover:text-[#7CA7B8] transition-colors no-underline">
+                {isManager ? "Manage Tasks &rarr;" : "View Task List &rarr;"}
+              </a>
             </div>
 
-            {/* Chat message list area */}
-            <div ref={chatContainerRef} className="bg-slate-50/50 rounded-xl p-4 border border-solid border-slate-100 h-[380px] overflow-y-auto flex flex-col gap-4">
-              {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-slate-400 font-['DM_Sans'] gap-2">
-                  <span className="text-3xl">💤</span>
-                  <span className="text-sm">No messages yet. Send a note to start the discussion!</span>
-                </div>
-              ) : (
-                messages.map((msg) => {
-                  const isMe = msg.userId === session.id;
-                  const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                  const dateStr = new Date(msg.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' });
-                  
-                  const initials = msg.userName
-                    .split(" ")
-                    .map((n: string) => n[0])
-                    .join("")
-                    .toUpperCase()
-                    .substring(0, 2);
+            {pendingTasks.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-['DM_Sans'] bg-white shadow-sm">
+                No pending workloads. All syncs completed!
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4 max-h-[500px] overflow-y-auto pr-1">
+                {pendingTasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className="shadow-[0_4px_15px_-3px_rgba(15,23,42,0.04)] rounded-xl bg-white border border-solid border-slate-200/80 p-5 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col gap-3"
+                  >
+                    <div className="flex justify-between items-start gap-2">
+                      <h4 className="m-0 text-lg font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">{task.title}</h4>
+                      <span
+                        className={`text-xs px-2.5 py-1 rounded-md font-semibold border border-solid ${
+                          task.priority === "High"
+                            ? "bg-red-50 text-red-650 border-red-100"
+                            : task.priority === "Medium"
+                            ? "bg-orange-50 text-orange-600 border-orange-100"
+                            : "bg-[#A1CCA6]/15 text-[#097C87] border-[#A1CCA6]/30"
+                        }`}
+                      >
+                        {task.priority}
+                      </span>
+                    </div>
+                    <p className="m-0 text-sm text-slate-500 font-['DM_Sans'] line-clamp-2 leading-relaxed">
+                      {task.description}
+                    </p>
+                    <div className="text-xs text-slate-400 font-['DM_Sans'] border-t border-solid border-slate-100 pt-2 flex justify-between items-center">
+                      <span>👤 {task.assignedMember}</span>
+                      <span className={`font-semibold px-2 py-0.5 rounded text-xs ${
+                        task.status === "In Progress" ? "bg-[#5F8D9E]/10 text-[#5F8D9E] border border-solid border-[#5F8D9E]/20" : "bg-slate-50 text-slate-500 border border-solid border-slate-150"
+                      }`}>{task.status}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
 
-                  return (
-                    <div
-                      key={msg.id}
-                      className={`flex items-start gap-3 max-w-[80%] ${
-                        isMe ? "self-end flex-row-reverse" : "self-start"
-                      }`}
-                    >
-                      {/* Avatar */}
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                        isMe ? "bg-[#5F8D9E] text-white" : "bg-[#5F8D9E]/20 text-[#5F8D9E] border border-solid border-[#5F8D9E]/45"
+        {/* Group Discussion Board Section */}
+        <section className="w-full flex flex-col gap-6 bg-white border border-solid border-slate-200/80 rounded-2xl p-8 shadow-[0_4px_25px_-5px_rgba(9,124,135,0.04)] mb-12">
+          <div className="flex justify-between items-center border-b border-solid border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">💬</span>
+              <div>
+                <h3 className="m-0 text-xl font-bold text-slate-900 tracking-tight font-['Space_Grotesk']">
+                  Group Discussion Board
+                </h3>
+                <p className="m-0 text-xs text-slate-500 font-['DM_Sans'] mt-0.5">
+                  Real-time collaborative chat for members of <strong>{activeGroup.name}</strong>
+                </p>
+              </div>
+            </div>
+            <span className="text-xs bg-[#5F8D9E]/15 border border-solid border-[#5F8D9E]/35 text-[#5F8D9E] px-2.5 py-1 rounded-full font-bold font-mono">
+              {messages.length} messages
+            </span>
+          </div>
+
+          {/* Chat message list area */}
+          <div ref={chatContainerRef} className="bg-slate-50/50 rounded-xl p-4 border border-solid border-slate-100 h-[380px] overflow-y-auto flex flex-col gap-4">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-slate-400 font-['DM_Sans'] gap-2">
+                <span className="text-3xl">💤</span>
+                <span className="text-sm">No messages yet. Send a note to start the discussion!</span>
+              </div>
+            ) : (
+              messages.map((msg) => {
+                const isMe = msg.userId === session.id;
+                const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dateStr = new Date(msg.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' });
+                
+                const initials = msg.userName
+                  .split(" ")
+                  .map((n: string) => n[0])
+                  .join("")
+                  .toUpperCase()
+                  .substring(0, 2);
+
+                return (
+                  <div
+                    key={msg.id}
+                    className={`flex items-start gap-3 max-w-[80%] ${
+                      isMe ? "self-end flex-row-reverse" : "self-start"
+                    }`}
+                  >
+                    {/* Avatar */}
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                      isMe ? "bg-[#5F8D9E] text-white" : "bg-[#5F8D9E]/20 text-[#5F8D9E] border border-solid border-[#5F8D9E]/45"
+                    }`}>
+                      {initials}
+                    </div>
+
+                    {/* Message Bubble Container */}
+                    <div className="flex flex-col gap-1">
+                      {/* Message Header */}
+                      <div className={`flex items-center gap-2 text-xs text-slate-400 font-['DM_Sans'] ${
+                        isMe ? "justify-end" : "justify-start"
                       }`}>
-                        {initials}
+                        {!isMe && <span className="font-bold text-slate-700">{msg.userName}</span>}
+                        <span>{dateStr}, {timeStr}</span>
                       </div>
 
-                      {/* Message Bubble Container */}
-                      <div className="flex flex-col gap-1">
-                        {/* Message Header */}
-                        <div className={`flex items-center gap-2 text-xs text-slate-400 font-['DM_Sans'] ${
-                          isMe ? "justify-end" : "justify-start"
-                        }`}>
-                          {!isMe && <span className="font-bold text-slate-700">{msg.userName}</span>}
-                          <span>{dateStr}, {timeStr}</span>
-                        </div>
-
-                        {/* Bubble */}
-                        <div className={`rounded-2xl px-4 py-2.5 text-sm font-['DM_Sans'] shadow-sm leading-relaxed ${
-                          isMe
-                            ? "bg-[#5F8D9E] text-white rounded-tr-none"
-                            : "bg-white text-slate-800 border border-solid border-slate-200/60 rounded-tl-none"
-                        }`}>
-                          {msg.content}
-                        </div>
+                      {/* Bubble */}
+                      <div className={`rounded-2xl px-4 py-2.5 text-sm font-['DM_Sans'] shadow-sm leading-relaxed ${
+                        isMe
+                          ? "bg-[#5F8D9E] text-white rounded-tr-none"
+                          : "bg-white text-slate-800 border border-solid border-slate-200/60 rounded-tl-none"
+                      }`}>
+                        {msg.content}
                       </div>
                     </div>
-                  );
-                })
-              )}
-            </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
 
-            {/* Send Message Form */}
-            <form onSubmit={handleSendMessage} className="flex gap-3">
-              <input
-                type="text"
-                value={newMessageText}
-                onChange={(e) => setNewMessageText(e.target.value)}
-                placeholder="Type a message to the group..."
-                disabled={sendingMessage}
-                className="flex-1 bg-white border border-solid border-slate-200 rounded-xl py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#5F8D9E] transition"
-              />
-              <button
-                type="submit"
-                disabled={sendingMessage || !newMessageText.trim()}
-                className="cursor-pointer border-none py-3.5 px-6 bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white font-bold rounded-xl text-base shadow-sm hover:shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 flex items-center justify-center gap-2"
-              >
-                {sendingMessage ? "Sending..." : "Send"}
-                <svg className="w-4 h-4 fill-current rotate-90" viewBox="0 0 20 20">
-                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                </svg>
-              </button>
-            </form>
-          </section>
-        </main>
-      )}
+          {/* Send Message Form */}
+          <form onSubmit={handleSendMessage} className="flex gap-3">
+            <input
+              type="text"
+              value={newMessageText}
+              onChange={(e) => setNewMessageText(e.target.value)}
+              placeholder="Type a message to the group..."
+              disabled={sendingMessage}
+              className="flex-1 bg-white border border-solid border-slate-200 rounded-xl py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#5F8D9E] transition"
+            />
+            <button
+              type="submit"
+              disabled={sendingMessage || !newMessageText.trim()}
+              className="cursor-pointer border-none py-3.5 px-6 bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white font-bold rounded-xl text-base shadow-sm hover:shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 flex items-center justify-center gap-2"
+            >
+              {sendingMessage ? "Sending..." : "Send"}
+              <svg className="w-4 h-4 fill-current rotate-90" viewBox="0 0 20 20">
+                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+              </svg>
+            </button>
+          </form>
+        </section>
+      </main>
 
       <FrameComponent3 />
     </div>

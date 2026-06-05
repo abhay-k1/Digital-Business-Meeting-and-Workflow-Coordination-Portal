@@ -56,7 +56,7 @@ export default function TasksPage() {
 
     const groupId = localStorage.getItem("active_group_id");
     if (!groupId) {
-      window.location.href = "/dashboard";
+      window.location.href = "/groups";
       return;
     }
 
@@ -71,7 +71,7 @@ export default function TasksPage() {
 
       const matchedGroup = data.groups?.find((g: any) => g.id === groupId);
       if (!matchedGroup) {
-        window.location.href = "/dashboard";
+        window.location.href = "/groups";
         return;
       }
       setActiveGroup(matchedGroup);
@@ -204,15 +204,6 @@ export default function TasksPage() {
           <div className="text-base text-slate-500 font-['DM_Sans']">
             Workspace: 🏢 <strong className="text-slate-800 text-lg font-['Space_Grotesk']">{activeGroup.name}</strong> (Code: <span className="font-mono bg-[#355C7D]/10 border border-solid border-[#355C7D]/20 px-2.5 py-0.5 rounded text-[#355C7D] font-bold">{activeGroup.code}</span>)
           </div>
-          <button
-            onClick={() => {
-              localStorage.removeItem("active_group_id");
-              window.location.href = "/dashboard";
-            }}
-            className="cursor-pointer border-none bg-transparent text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors font-['Space_Grotesk']"
-          >
-            Switch Workspace Group
-          </button>
         </div>
 
         {/* Title Section */}

@@ -13,10 +13,10 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // If user is already logged in, redirect to dashboard.
+    // If user is already logged in, redirect to groups.
     const session = getSession();
     if (session) {
-      window.location.href = "/dashboard";
+      window.location.href = "/groups";
     }
   }, []);
 
@@ -38,7 +38,8 @@ export default function RegisterPage() {
       }
 
       saveSession(data.user);
-      window.location.href = "/dashboard";
+      localStorage.removeItem("active_group_id"); // Ensure fresh group choice
+      window.location.href = "/groups";
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {

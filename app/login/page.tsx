@@ -10,16 +10,20 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [redirectUrl, setRedirectUrl] = useState("/dashboard");
+  const [redirectUrl, setRedirectUrl] = useState("/groups");
 
   useEffect(() => {
     // Retrieve potential redirection path from search query
-    let targetRedirect = "/dashboard";
+    let targetRedirect = "/groups";
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const red = params.get("redirect");
       if (red) {
-        targetRedirect = red;
+        if (red.startsWith("/groups")) {
+          targetRedirect = red;
+        } else {
+          targetRedirect = `/groups?redirect=${encodeURIComponent(red)}`;
+        }
       }
     }
     setRedirectUrl(targetRedirect);
@@ -49,6 +53,7 @@ export default function LoginPage() {
       }
 
       saveSession(data.user);
+      localStorage.removeItem("active_group_id"); // Ensure fresh group choice
       window.location.href = redirectUrl;
     } catch (err: any) {
       setError(err.message || "Something went wrong");

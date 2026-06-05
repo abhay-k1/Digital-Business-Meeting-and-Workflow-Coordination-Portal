@@ -14,11 +14,11 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
   const onCardContainerClick = useCallback(() => {
     const session = getSession();
     if (!session) {
-      window.location.href = "/login?redirect=" + encodeURIComponent("/dashboard?redirect=/meetings");
+      window.location.href = "/login?redirect=" + encodeURIComponent("/groups?redirect=/meetings");
     } else {
       const activeGroup = localStorage.getItem("active_group_id");
       if (!activeGroup) {
-        window.location.href = "/dashboard?redirect=/meetings";
+        window.location.href = "/groups?redirect=/meetings";
       } else {
         window.location.href = "/meetings";
       }
@@ -28,11 +28,11 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
   const onCardContainerClick1 = useCallback(() => {
     const session = getSession();
     if (!session) {
-      window.location.href = "/login?redirect=" + encodeURIComponent("/dashboard?redirect=/tasks");
+      window.location.href = "/login?redirect=" + encodeURIComponent("/groups?redirect=/tasks");
     } else {
       const activeGroup = localStorage.getItem("active_group_id");
       if (!activeGroup) {
-        window.location.href = "/dashboard?redirect=/tasks";
+        window.location.href = "/groups?redirect=/tasks";
       } else {
         window.location.href = "/tasks";
       }
@@ -41,22 +41,22 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
 
   const onCardContainerClick2 = useCallback(() => {
     const session = getSession();
-    window.location.href = session ? "/dashboard" : "/login";
+    window.location.href = session ? "/groups" : "/login";
   }, []);
 
   const onCardContainerClick3 = useCallback(() => {
     const session = getSession();
-    window.location.href = session ? "/dashboard" : "/login";
+    window.location.href = session ? "/groups" : "/login";
   }, []);
 
   const onBookSyncClick = useCallback(() => {
     const session = getSession();
     if (!session) {
-      window.location.href = "/login?redirect=" + encodeURIComponent("/dashboard?redirect=/meetings");
+      window.location.href = "/login?redirect=" + encodeURIComponent("/groups?redirect=/meetings");
     } else {
       const activeGroup = localStorage.getItem("active_group_id");
       if (!activeGroup) {
-        window.location.href = "/dashboard?redirect=/meetings";
+        window.location.href = "/groups?redirect=/meetings";
       } else {
         window.location.href = "/meetings";
       }
