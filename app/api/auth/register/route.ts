@@ -3,23 +3,28 @@ import { readDB, writeDB } from "../../../lib/db";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password } = await request.json();
+    const { name, username, email, password } = await request.json();
 
-    if (!name || !email || !password) {
+    if (!name || !username || !email || !password) {
       return NextResponse.json(
-        { error: "Name, email, and password are required" },
+        { error: "Name, username, email, and password are required" },
         { status: 400 }
       );
     }
 
     const db = readDB();
     const existing = db.users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase()
+      (u) => 
+        u.email.toLowerCase() === email.toLowerCase() || 
+        (u.username || "").toLowerCase() === username.toLowerCase()
     );
 
     if (existing) {
+      const errorMsg = existing.email.toLowerCase() === email.toLowerCase() 
+        ? "Email is already registered" 
+        : "Username is already taken";
       return NextResponse.json(
-        { error: "Email is already registered" },
+        { error: errorMsg },
         { status: 400 }
       );
     }
@@ -27,6 +32,7 @@ export async function POST(request: Request) {
     const newUser = {
       id: Date.now().toString(),
       name,
+      username,
       email,
       password,
     };
@@ -47,6 +53,7 @@ export async function POST(request: Request) {
         id: newUser.id,
         email: newUser.email,
         name: newUser.name,
+        username: newUser.username,
       },
     });
   } catch (error) {

@@ -158,6 +158,11 @@ export default function GroupsPage() {
 
       <main className="self-stretch flex flex-col gap-12 px-16 box-border max-w-full mq800:px-6">
         <div className="flex flex-col gap-2">
+          {session && (
+            <div className="text-2xl font-bold text-[#5F8D9E] mb-2 font-['Space_Grotesk'] animate-fade-in">
+              Hello {session.name.split(" ")[0]}, How u doing? 👋
+            </div>
+          )}
           <Heading
             label="Choose Team"
             label1="Workspace"

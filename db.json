@@ -4,17 +4,20 @@
       "id": "1",
       "email": "demo@portal.com",
       "name": "Abhay Kamble",
+      "username": "abhay",
       "password": "password"
     },
     {
       "id": "1779907415345",
       "name": "Vibhanshu G",
+      "username": "vibhanshu",
       "email": "vibhanshu@gmail.com",
       "password": "vibhanshu"
     },
     {
       "id": "2",
       "name": "Sneha Shinde",
+      "username": "sneha",
       "email": "sneha@portal.com",
       "password": "password"
     }

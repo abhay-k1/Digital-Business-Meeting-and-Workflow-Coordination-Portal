@@ -7,6 +7,7 @@ import FrameComponent3 from "../../components/frame-component3";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -29,7 +30,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, username, email, password }),
       });
 
       const data = await res.json();
@@ -79,6 +80,20 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Abhay Kamble"
+                className="w-full bg-[#fff] border-slate-200 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-[#999] focus:ring-2 focus:ring-[#475569] transition duration-150"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-slate-700">
+                Username
+              </label>
+              <input
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="abhay"
                 className="w-full bg-[#fff] border-slate-200 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-[#999] focus:ring-2 focus:ring-[#475569] transition duration-150"
               />
             </div>

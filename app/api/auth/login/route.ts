@@ -3,23 +3,25 @@ import { readDB } from "../../../lib/db";
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
+    const { email, username, password } = await request.json();
 
-    if (!email || !password) {
+    if (!email || !username || !password) {
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { error: "Email, username, and password are required" },
         { status: 400 }
       );
     }
 
     const db = readDB();
     const user = db.users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase()
+      (u) => 
+        u.email.toLowerCase() === email.toLowerCase() &&
+        (u.username || "").toLowerCase() === username.toLowerCase()
     );
 
     if (!user || user.password !== password) {
       return NextResponse.json(
-        { error: "Invalid email or password" },
+        { error: "Invalid credentials" },
         { status: 401 }
       );
     }
@@ -31,6 +33,7 @@ export async function POST(request: Request) {
         id: user.id,
         email: user.email,
         name: user.name,
+        username: user.username,
       },
     });
   } catch (error) {
