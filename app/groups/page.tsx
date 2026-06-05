@@ -158,7 +158,7 @@ export default function GroupsPage() {
 
       <main className="self-stretch flex flex-col gap-12 px-16 box-border max-w-full mq800:px-6">
         {session && (
-          <div className="text-[34px] font-extrabold tracking-tight text-slate-800 font-['Space_Grotesk'] mb-[-16px] mt-2 animate-fade-in flex flex-wrap gap-x-2 items-center">
+          <div className="text-[34px] font-extrabold tracking-tight text-slate-800 font-['Space_Grotesk'] mb-[-16px] mt-[-48px] animate-fade-in flex flex-wrap gap-x-2 items-center">
             <span>Hello</span>
             <span className="text-[#097C87] relative z-10 px-1">
               {session.name.split(" ")[0]}
