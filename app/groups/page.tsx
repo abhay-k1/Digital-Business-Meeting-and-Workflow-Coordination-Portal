@@ -157,12 +157,18 @@ export default function GroupsPage() {
       <FrameComponent />
 
       <main className="self-stretch flex flex-col gap-12 px-16 box-border max-w-full mq800:px-6">
+        {session && (
+          <div className="text-[34px] font-extrabold tracking-tight text-slate-800 font-['Space_Grotesk'] mb-[-16px] mt-2 animate-fade-in flex flex-wrap gap-x-2 items-center">
+            <span>Hello</span>
+            <span className="text-[#097C87] relative z-10 px-1">
+              {session.name.split(" ")[0]}
+              <span className="absolute inset-x-0 bottom-1 h-3 bg-[#23CED9]/25 -z-10 rounded"></span>
+            </span>
+            <span className="text-slate-500 font-medium">, How u doing? 👋</span>
+          </div>
+        )}
+
         <div className="flex flex-col gap-2">
-          {session && (
-            <div className="text-2xl font-bold text-[#5F8D9E] mb-2 font-['Space_Grotesk'] animate-fade-in">
-              Hello {session.name.split(" ")[0]}, How u doing? 👋
-            </div>
-          )}
           <Heading
             label="Choose Team"
             label1="Workspace"
