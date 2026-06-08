@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Missing Group ID." }, { status: 400 });
     }
 
-    const db = readDB();
+    const db = await readDB();
     
     // Verify user is member of the group
     const group = db.groups.find((g) => g.id === groupId);
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const db = readDB();
+    const db = await readDB();
     
     // Verify group exists and user is member
     const group = db.groups.find((g) => g.id === groupId);
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     };
 
     db.messages.push(newMessage);
-    const success = writeDB(db);
+    const success = await writeDB(db);
 
     if (!success) {
       return NextResponse.json({ error: "Failed to save message" }, { status: 500 });

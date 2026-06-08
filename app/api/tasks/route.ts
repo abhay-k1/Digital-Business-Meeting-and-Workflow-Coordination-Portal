@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const groupId = url.searchParams.get("groupId");
 
-    const db = readDB();
+    const db = await readDB();
     let tasks;
 
     if (groupId) {
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    const db = readDB();
+    const db = await readDB();
     const newTask: Task = {
       id: "t_" + Date.now().toString(),
       userId,
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     };
 
     db.tasks.push(newTask);
-    const success = writeDB(db);
+    const success = await writeDB(db);
 
     if (!success) {
       return NextResponse.json({ error: "Failed to save task" }, { status: 500 });
@@ -100,7 +100,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Task ID is required" }, { status: 400 });
     }
 
-    const db = readDB();
+    const db = await readDB();
     // Allow modification if user is the creator (manager) OR the assigned member
     const taskIndex = db.tasks.findIndex(
       (t) => t.id === id && (t.userId === userId || t.assignedMemberId === userId)
@@ -121,7 +121,7 @@ export async function PUT(request: Request) {
       status: status ?? currentTask.status,
     };
 
-    const success = writeDB(db);
+    const success = await writeDB(db);
     if (!success) {
       return NextResponse.json({ error: "Failed to update task" }, { status: 500 });
     }

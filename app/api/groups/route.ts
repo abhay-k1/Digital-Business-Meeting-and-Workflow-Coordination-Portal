@@ -25,7 +25,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized. Missing User ID." }, { status: 401 });
     }
 
-    const db = readDB();
+    const db = await readDB();
     // Filter groups where user is either the manager or a member
     const groups = db.groups.filter(
       (g) => g.managerId === userId || g.members.some((m) => m.id === userId)
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Group name is required" }, { status: 400 });
     }
 
-    const db = readDB();
+    const db = await readDB();
     const user = db.users.find((u) => u.id === userId);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     };
 
     db.groups.push(newGroup);
-    const success = writeDB(db);
+    const success = await writeDB(db);
 
     if (!success) {
       return NextResponse.json({ error: "Failed to save group" }, { status: 500 });
@@ -98,7 +98,7 @@ export async function PUT(request: Request) {
     }
 
     const cleanCode = code.trim().toUpperCase();
-    const db = readDB();
+    const db = await readDB();
 
     const user = db.users.find((u) => u.id === userId);
     if (!user) {
@@ -128,7 +128,7 @@ export async function PUT(request: Request) {
     group.members.push(newMember);
     db.groups[groupIndex] = group;
 
-    const success = writeDB(db);
+    const success = await writeDB(db);
     if (!success) {
       return NextResponse.json({ error: "Failed to join group" }, { status: 500 });
     }

@@ -15,7 +15,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Missing Group ID." }, { status: 400 });
     }
 
-    const db = readDB();
+    const db = await readDB();
 
     // Verify user is member of the group
     const group = db.groups.find((g) => g.id === groupId);

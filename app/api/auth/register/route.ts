@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const db = readDB();
+    const db = await readDB();
     const existing = db.users.find(
       (u) => 
         u.email.toLowerCase() === email.toLowerCase() || 
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     };
 
     db.users.push(newUser);
-    const success = writeDB(db);
+    const success = await writeDB(db);
 
     if (!success) {
       return NextResponse.json(

@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const groupId = url.searchParams.get("groupId");
 
-    const db = readDB();
+    const db = await readDB();
     let meetings;
     if (groupId) {
       meetings = db.meetings.filter((m) => m.groupId === groupId);
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    const db = readDB();
+    const db = await readDB();
     const newMeeting: Meeting = {
       id: "m_" + Date.now().toString(),
       userId,
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     };
 
     db.meetings.push(newMeeting);
-    const success = writeDB(db);
+    const success = await writeDB(db);
 
     if (!success) {
       return NextResponse.json({ error: "Failed to save meeting" }, { status: 500 });
@@ -94,7 +94,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Meeting ID is required" }, { status: 400 });
     }
 
-    const db = readDB();
+    const db = await readDB();
     const meetingIndex = db.meetings.findIndex((m) => m.id === id && m.userId === userId);
 
     if (meetingIndex === -1) {
@@ -113,7 +113,7 @@ export async function PUT(request: Request) {
       meetLink: meetLink !== undefined ? meetLink : currentMeeting.meetLink,
     };
 
-    const success = writeDB(db);
+    const success = await writeDB(db);
     if (!success) {
       return NextResponse.json({ error: "Failed to update meeting" }, { status: 500 });
     }

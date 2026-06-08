@@ -1,8 +1,8 @@
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 
-// Define the absolute path to the local database file.
-const DB_PATH = path.join(process.cwd(), "db.json");
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Define basic interface schemas.
 export interface User {
@@ -76,20 +76,35 @@ export interface DatabaseSchema {
 }
 
 /**
- * Reads the database content from the file synchronously to ensure absolute consistency.
+ * Reads the database content from Supabase.
  */
-export function readDB(): DatabaseSchema {
+export async function readDB(): Promise<DatabaseSchema> {
   try {
-    if (!fs.existsSync(DB_PATH)) {
-      const defaultDB: DatabaseSchema = { users: [], meetings: [], tasks: [], groups: [], messages: [] };
-      fs.writeFileSync(DB_PATH, JSON.stringify(defaultDB, null, 2), "utf-8");
-      return defaultDB;
+    const [
+      { data: users, error: errUsers },
+      { data: groups, error: errGroups },
+      { data: meetings, error: errMeetings },
+      { data: tasks, error: errTasks },
+      { data: messages, error: errMessages }
+    ] = await Promise.all([
+      supabase.from("users").select("*"),
+      supabase.from("groups").select("*"),
+      supabase.from("meetings").select("*"),
+      supabase.from("tasks").select("*"),
+      supabase.from("messages").select("*")
+    ]);
+
+    if (errUsers || errGroups || errMeetings || errTasks || errMessages) {
+      console.error("Supabase select error:", { errUsers, errGroups, errMeetings, errTasks, errMessages });
     }
-    const raw = fs.readFileSync(DB_PATH, "utf-8");
-    const parsed = JSON.parse(raw);
-    if (!parsed.groups) parsed.groups = [];
-    if (!parsed.messages) parsed.messages = [];
-    return parsed;
+
+    return {
+      users: users || [],
+      groups: groups || [],
+      meetings: meetings || [],
+      tasks: tasks || [],
+      messages: messages || []
+    };
   } catch (error) {
     console.error("Error reading database:", error);
     return { users: [], meetings: [], tasks: [], groups: [], messages: [] };
@@ -97,14 +112,37 @@ export function readDB(): DatabaseSchema {
 }
 
 /**
- * Writes the database content to the file synchronously to prevent overlapping file locks.
+ * Writes/upserts the database content to Supabase.
  */
-export function writeDB(data: DatabaseSchema): boolean {
+export async function writeDB(data: DatabaseSchema): Promise<boolean> {
   try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+    const promises = [];
+    if (data.users && data.users.length > 0) {
+      promises.push(supabase.from("users").upsert(data.users));
+    }
+    if (data.groups && data.groups.length > 0) {
+      promises.push(supabase.from("groups").upsert(data.groups));
+    }
+    if (data.meetings && data.meetings.length > 0) {
+      promises.push(supabase.from("meetings").upsert(data.meetings));
+    }
+    if (data.tasks && data.tasks.length > 0) {
+      promises.push(supabase.from("tasks").upsert(data.tasks));
+    }
+    if (data.messages && data.messages.length > 0) {
+      promises.push(supabase.from("messages").upsert(data.messages));
+    }
+    const results = await Promise.all(promises);
+    const hasError = results.some((r) => r.error);
+    if (hasError) {
+      const errors = results.filter((r) => r.error).map((r) => r.error);
+      console.error("Error writing to Supabase:", errors);
+      return false;
+    }
     return true;
   } catch (error) {
     console.error("Error writing database:", error);
     return false;
   }
 }
+
