@@ -207,12 +207,41 @@ export default function GroupsPage() {
               </div>
             ) : (
               <div className="flex flex-col gap-4 max-h-[600px] overflow-y-auto pr-2">
-                {groups.map((group) => {
+                {groups.map((group, idx) => {
                   const isGroupManager = group.managerId === session.id;
+
+                  // Dynamic theme mapping per workspace card
+                  const borderColors = [
+                    "border-l-sky-500",
+                    "border-l-emerald-500",
+                    "border-l-purple-500",
+                    "border-l-amber-500",
+                    "border-l-rose-500",
+                  ];
+                  const codeBgColors = [
+                    "bg-sky-50 text-sky-700 border-sky-100",
+                    "bg-emerald-50 text-emerald-700 border-emerald-100",
+                    "bg-purple-50 text-purple-700 border-purple-100",
+                    "bg-amber-50 text-amber-700 border-amber-100",
+                    "bg-rose-50 text-rose-700 border-rose-100",
+                  ];
+                  const buttonBgColors = [
+                    "bg-sky-600 hover:bg-sky-700",
+                    "bg-emerald-600 hover:bg-emerald-700",
+                    "bg-purple-600 hover:bg-purple-700",
+                    "bg-amber-600 hover:bg-amber-700",
+                    "bg-rose-600 hover:bg-rose-700",
+                  ];
+
+                  const colorIdx = idx % borderColors.length;
+                  const borderClass = borderColors[colorIdx];
+                  const codeClass = codeBgColors[colorIdx];
+                  const buttonClass = buttonBgColors[colorIdx];
+
                   return (
                     <div
                       key={group.id}
-                      className="shadow-[0_4px_20px_-4px_rgba(95,141,158,0.06)] rounded-2xl bg-white border-l-4 border-l-[#5F8D9E] border-y border-r border-solid border-slate-200/80 p-6 flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300 cursor-pointer"
+                      className={`shadow-[0_4px_20px_-4px_rgba(15,23,42,0.05)] rounded-2xl bg-white border-l-4 ${borderClass} border-y border-r border-solid border-slate-200/80 p-6 flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300 cursor-pointer`}
                       onClick={() => handleSelectGroup(group.id)}
                     >
                       <div className="flex flex-col gap-2.5 min-w-0">
@@ -223,12 +252,12 @@ export default function GroupsPage() {
                           <span>👑 Manager: <strong className="text-slate-700 font-medium">{isGroupManager ? "You" : group.members.find(m => m.id === group.managerId)?.name || "Unknown"}</strong></span>
                           <span>👥 Members: <strong className="text-slate-700 font-medium">{group.members.length}</strong></span>
                         </div>
-                        <span className="inline-block text-xs bg-[#5F8D9E]/10 border border-solid border-[#5F8D9E]/20 text-[#5F8D9E] px-2.5 py-1 rounded-md w-fit font-bold font-mono tracking-wider">
+                        <span className={`inline-block text-xs border border-solid ${codeClass} px-2.5 py-1 rounded-md w-fit font-bold font-mono tracking-wider`}>
                           CODE: {group.code}
                         </span>
                       </div>
                       <button
-                        className="cursor-pointer border-none bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:shadow transition-all duration-200 shrink-0"
+                        className={`cursor-pointer border-none ${buttonClass} text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:shadow transition-all duration-200 shrink-0`}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleSelectGroup(group.id);

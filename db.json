@@ -154,7 +154,7 @@
       "assignedMember": "Vibhanshu G",
       "deadline": "2026-06-10",
       "priority": "High",
-      "status": "Pending"
+      "status": "In Progress"
     },
     {
       "id": "t2",
@@ -166,7 +166,7 @@
       "assignedMember": "Sneha Shinde",
       "deadline": "2026-06-12",
       "priority": "Medium",
-      "status": "In Progress"
+      "status": "Pending"
     },
     {
       "id": "t3",
@@ -195,28 +195,148 @@
   ],
   "messages": [
     {
-      "id": "msg_demo1",
+      "id": "msg_i1",
+      "groupId": "g_1780573099277",
+      "userId": "1779907415345",
+      "userName": "Vibhanshu G",
+      "content": "Hi all, I've finished setting up the local JSON database schema. Everything is persisting nicely in db.json.",
+      "timestamp": "2026-06-07T09:00:00.000Z"
+    },
+    {
+      "id": "msg_i2",
       "groupId": "g_1780573099277",
       "userId": "1",
       "userName": "Abhay Kamble",
-      "content": "Hi everyone! Welcome to the Internship week 3 group. Let's use this board for updates.",
-      "timestamp": "2026-06-05T04:00:00.000Z"
+      "content": "Awesome Vibhanshu! Reviewing the schema design now. Looks very solid and clean.",
+      "timestamp": "2026-06-07T09:05:00.000Z"
     },
     {
-      "id": "msg_demo2",
+      "id": "msg_i3",
+      "groupId": "g_1780573099277",
+      "userId": "2",
+      "userName": "Sneha Shinde",
+      "content": "Hello team, I'm checking the current UI progress. The Kanban board looks fantastic!",
+      "timestamp": "2026-06-07T09:10:00.000Z"
+    },
+    {
+      "id": "msg_i4",
+      "groupId": "g_1780573099277",
+      "userId": "2",
+      "userName": "Sneha Shinde",
+      "content": "Wait, I found an issue: the colors on the header and dashboard boxes look too identical.",
+      "timestamp": "2026-06-07T09:12:00.000Z"
+    },
+    {
+      "id": "msg_i5",
+      "groupId": "g_1780573099277",
+      "userId": "2",
+      "userName": "Sneha Shinde",
+      "content": "⚠️ Blocker: I need design feedback on the colors so we can make them easier to differentiate.",
+      "timestamp": "2026-06-07T09:15:00.000Z"
+    },
+    {
+      "id": "msg_i6",
+      "groupId": "g_1780573099277",
+      "userId": "1",
+      "userName": "Abhay Kamble",
+      "content": "No worries Sneha, I'll help you look at that. By the way, I am exporting the SVGs for the dashboard widgets today.",
+      "timestamp": "2026-06-07T09:20:00.000Z"
+    },
+    {
+      "id": "msg_i7",
       "groupId": "g_1780573099277",
       "userId": "1779907415345",
       "userName": "Vibhanshu G",
-      "content": "Thanks Abhay! I will start working on the JSON database schema setup.",
-      "timestamp": "2026-06-05T04:02:00.000Z"
+      "content": "Great progress. Let's make sure we document the new contrast colors in global.css.",
+      "timestamp": "2026-06-07T09:25:00.000Z"
     },
     {
-      "id": "msg_demo3",
+      "id": "msg_b1",
       "groupId": "g_brand_review",
       "userId": "1779907415345",
       "userName": "Vibhanshu G",
-      "content": "Hello team, let's coordinate design reviews here. Abhay, I assigned the Icon Pipeline task to you.",
-      "timestamp": "2026-06-05T04:05:00.000Z"
+      "content": "Hello team, coordinating brand guidelines and design review here.",
+      "timestamp": "2026-06-07T10:00:00.000Z"
+    },
+    {
+      "id": "msg_b2",
+      "groupId": "g_brand_review",
+      "userId": "1",
+      "userName": "Abhay Kamble",
+      "content": "Vibhanshu, completed the SVG exports for the new branding kit.",
+      "timestamp": "2026-06-07T10:05:00.000Z"
+    },
+    {
+      "id": "msg_b3",
+      "groupId": "g_brand_review",
+      "userId": "2",
+      "userName": "Sneha Shinde",
+      "content": "Perfect! I'll load them into the assets folder.",
+      "timestamp": "2026-06-07T10:10:00.000Z"
+    },
+    {
+      "id": "msg_b4",
+      "groupId": "g_brand_review",
+      "userId": "2",
+      "userName": "Sneha Shinde",
+      "content": "⚠️ Blocker: The dark cyan palette doesn't have enough contrast against the dark background footer.",
+      "timestamp": "2026-06-07T10:12:00.000Z"
+    },
+    {
+      "id": "msg_b5",
+      "groupId": "g_brand_review",
+      "userId": "1779907415345",
+      "userName": "Vibhanshu G",
+      "content": "I will inspect the tailwind colors or base hex codes to find a cleaner contrast value.",
+      "timestamp": "2026-06-07T10:15:00.000Z"
+    },
+    {
+      "id": "msg_b6",
+      "groupId": "g_brand_review",
+      "userId": "1",
+      "userName": "Abhay Kamble",
+      "content": "Next up: I'm developing the icons loading pipeline so they load dynamically.",
+      "timestamp": "2026-06-07T10:20:00.000Z"
+    },
+    {
+      "id": "msg_q1",
+      "groupId": "g_qa_sync",
+      "userId": "2",
+      "userName": "Sneha Shinde",
+      "content": "Welcome to the QA sync channel. Let's document our test runs here.",
+      "timestamp": "2026-06-07T11:00:00.000Z"
+    },
+    {
+      "id": "msg_q2",
+      "groupId": "g_qa_sync",
+      "userId": "1",
+      "userName": "Abhay Kamble",
+      "content": "Vibhanshu, did you run the stress tests on the database API?",
+      "timestamp": "2026-06-07T11:05:00.000Z"
+    },
+    {
+      "id": "msg_q3",
+      "groupId": "g_qa_sync",
+      "userId": "1779907415345",
+      "userName": "Vibhanshu G",
+      "content": "Yes, Vibhanshu completed the DB benchmarking suite.",
+      "timestamp": "2026-06-07T11:10:00.000Z"
+    },
+    {
+      "id": "msg_q4",
+      "groupId": "g_qa_sync",
+      "userId": "2",
+      "userName": "Sneha Shinde",
+      "content": "⚠️ Blocker: Under high stress, the file write operations throw locking errors (EBUSY). We need to protect the file from concurrent writes.",
+      "timestamp": "2026-06-07T11:15:00.000Z"
+    },
+    {
+      "id": "msg_q5",
+      "groupId": "g_qa_sync",
+      "userId": "1",
+      "userName": "Abhay Kamble",
+      "content": "Got it. Abhay is working on adding a retry mechanism with atomic writes today.",
+      "timestamp": "2026-06-07T11:20:00.000Z"
     }
   ]
 }

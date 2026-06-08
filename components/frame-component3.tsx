@@ -13,7 +13,7 @@ const FrameComponent3: NextPage<FrameComponent3Type> = ({ className = "" }) => {
       className={`self-stretch flex items-start py-0 pl-0 pr-0 box-border max-w-full shrink-0 ${className}`}
     >
       <div
-        className="self-stretch flex-1 rounded-t-[32px] rounded-b-none bg-grey border-t border-solid border-slate-200/60 flex flex-col items-start pt-[65px] px-[80px] pb-[60px] box-border max-w-full mq450:pt-9 mq450:pb-8 mq450:box-border mq800:gap-[25px] mq1350:pl-[30px] mq1350:pr-[30px] mq1350:box-border"
+        className="self-stretch flex-1 rounded-t-[32px] rounded-b-none bg-white/75 backdrop-blur-lg border-t-[3.5px] border-solid border-[#097C87] shadow-[0_-15px_40px_rgba(9,124,135,0.06)] flex flex-col items-start pt-[65px] px-[80px] pb-[60px] box-border max-w-full mq450:pt-9 mq450:pb-8 mq450:box-border mq800:gap-[25px] mq1350:pl-[30px] mq1350:pr-[30px] mq1350:box-border"
         data-scroll-to="footerContainer"
       >
         <div className="w-full flex items-start justify-between flex-wrap gap-12 max-w-full z-[1]">
@@ -25,7 +25,7 @@ const FrameComponent3: NextPage<FrameComponent3Type> = ({ className = "" }) => {
             />
             <div className="flex flex-col items-start gap-3.5 text-base text-slate-600 font-['DM_Sans'] mt-2">
               <div className="relative">
-                Email: <a href="mailto:abhaykamble976@gmail.com" className="font-semibold text-slate-800 hover:text-[#475569] underline">abhaykamble976@gmail.com</a>
+                Email: <a href="mailto:abhaykamble976@gmail.com" className="font-semibold text-[#097C87] hover:text-[#5F8D9E] transition underline">abhaykamble976@gmail.com</a>
               </div>
               <div className="relative">
                 Phone: <span className="font-semibold text-slate-800">8446638287</span>
@@ -48,12 +48,13 @@ const FrameComponent3: NextPage<FrameComponent3Type> = ({ className = "" }) => {
           {/* Logo Branding */}
           <div className="flex flex-col items-end gap-2 shrink-0">
             <Image
-              className="w-[260px] h-[70px] object-cover opacity-90 cursor-pointer"
+              className="w-[260px] h-[70px] object-cover opacity-95 cursor-pointer"
               width={260}
               height={70}
               sizes="100vw"
-              alt=""
+              alt="Digital Business Meeting and Workflow Coordination Portal Logo"
               src="/image-1@2x.png"
+              onClick={() => window.location.href = "/"}
             />
             <span className="text-xs text-slate-400 font-['DM_Sans'] pr-2">
               © 2026 Portal Inc. All rights reserved.

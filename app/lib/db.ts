@@ -60,6 +60,11 @@ export interface Message {
   userName: string;
   content: string;
   timestamp: string;
+  fileAttachment?: {
+    name: string;
+    type: string;
+    dataUrl: string;
+  };
 }
 
 export interface DatabaseSchema {

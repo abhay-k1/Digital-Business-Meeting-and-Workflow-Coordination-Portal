@@ -51,9 +51,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { groupId, userName, content } = await request.json();
+    const { groupId, userName, content, fileAttachment } = await request.json();
 
-    if (!groupId || !userName || !content || !content.trim()) {
+    if (!groupId || !userName || (!content?.trim() && !fileAttachment)) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -75,8 +75,9 @@ export async function POST(request: Request) {
       groupId,
       userId,
       userName: userName.trim(),
-      content: content.trim(),
+      content: (content || "").trim(),
       timestamp: new Date().toISOString(),
+      fileAttachment: fileAttachment || undefined,
     };
 
     db.messages.push(newMessage);

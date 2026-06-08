@@ -46,7 +46,7 @@ const FrameComponent: NextPage<FrameComponentType> = ({ className = "" }) => {
     <section
       className={`self-stretch flex items-start pt-0 px-0 pb-[66px] box-border max-w-full shrink-0 ${className}`}
     >
-      <header className="flex-1 bg-white/80 backdrop-blur-md border-b border-solid border-slate-200/50 flex items-center justify-between py-4 pl-6 pr-8 gap-5 top-[0] z-[99] sticky max-w-full">
+      <header className="flex-1 bg-white/75 backdrop-blur-lg border-b-[3.5px] border-solid border-[#097C87] shadow-[0_15px_40px_rgba(9,124,135,0.06)] flex items-center justify-between py-4 pl-6 pr-8 gap-5 top-[0] z-[99] sticky max-w-full">
         <Image
           className="w-[380px] h-[102px] relative object-cover cursor-pointer"
           loading="lazy"

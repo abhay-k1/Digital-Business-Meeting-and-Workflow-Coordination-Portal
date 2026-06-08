@@ -87,20 +87,6 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <label className="text-sm font-bold text-slate-700">
-                Email Address
-              </label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="email@example.com"
-                className="w-full bg-[#fff] border-slate-250 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-slate-400 focus:border-[#097C87] transition duration-150"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-slate-700">
                 Username
               </label>
               <input
@@ -109,6 +95,20 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter username"
+                className="w-full bg-[#fff] border-slate-250 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-slate-400 focus:border-[#097C87] transition duration-150"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-slate-700">
+                Email Address
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="email@example.com"
                 className="w-full bg-[#fff] border-slate-250 border-solid border-[1px] rounded-xl py-3 px-4 text-base font-['Space_Grotesk'] outline-none text-grays-black placeholder:text-slate-400 focus:border-[#097C87] transition duration-150"
               />
             </div>

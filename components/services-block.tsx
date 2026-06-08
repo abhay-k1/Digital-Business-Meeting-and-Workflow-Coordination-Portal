@@ -41,12 +41,25 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
 
   const onCardContainerClick2 = useCallback(() => {
     const session = getSession();
-    window.location.href = session ? "/groups" : "/login";
+    if (!session) {
+      window.location.href = "/login?redirect=" + encodeURIComponent("/groups");
+    } else {
+      window.location.href = "/groups";
+    }
   }, []);
 
   const onCardContainerClick3 = useCallback(() => {
     const session = getSession();
-    window.location.href = session ? "/groups" : "/login";
+    if (!session) {
+      window.location.href = "/login?redirect=" + encodeURIComponent("/groups?redirect=/dashboard");
+    } else {
+      const activeGroup = localStorage.getItem("active_group_id");
+      if (!activeGroup) {
+        window.location.href = "/groups?redirect=/dashboard";
+      } else {
+        window.location.href = "/dashboard";
+      }
+    }
   }, []);
 
   const onBookSyncClick = useCallback(() => {
@@ -103,6 +116,10 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
       <div className="w-full grid grid-cols-2 gap-8 max-w-full z-[1] shrink-0 mq1125:grid-cols-1">
         <Card
           onCardContainerClick={onCardContainerClick}
+          cardBackgroundColor="#f0f9ff"
+          cardPadding="48px 50px"
+          cardGap="20px"
+          headingAndLinkJustifyContent="unset"
           illustration="/Illustration4@2x.png"
           property1="Green"
           label="Meeting Coordination"
@@ -117,7 +134,7 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
         />
         <Card
           onCardContainerClick={onCardContainerClick1}
-          cardBackgroundColor="#f0fdfa"
+          cardBackgroundColor="#f0fdf4"
           cardPadding="48px 50px"
           cardGap="20px"
           headingAndLinkJustifyContent="unset"
@@ -136,7 +153,7 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
         />
         <Card
           onCardContainerClick={onCardContainerClick2}
-          cardBackgroundColor="#f8fafc"
+          cardBackgroundColor="#faf5ff"
           cardPadding="48px 50px"
           cardGap="20px"
           headingAndLinkJustifyContent="unset"
@@ -155,7 +172,7 @@ const ServicesBlock: NextPage<ServicesBlockType> = ({ className = "" }) => {
         />
         <Card
           onCardContainerClick={onCardContainerClick3}
-          cardBackgroundColor="#f0fdfa"
+          cardBackgroundColor="#fff7ed"
           cardPadding="48px 49px"
           cardGap="11px"
           headingAndLinkJustifyContent="center"

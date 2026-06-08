@@ -46,6 +46,195 @@ export default function DashboardPage() {
   const [sendingMessage, setSendingMessage] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // File Upload states
+  const [attachedFile, setAttachedFile] = useState<{ name: string; type: string; dataUrl: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAttachedFile({
+        name: file.name,
+        type: file.type,
+        dataUrl: reader.result as string,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Voice to Text & AI states
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
+  const [isRewriting, setIsRewriting] = useState(false);
+  const [voiceNote, setVoiceNote] = useState<{ name: string; type: string; dataUrl: string } | null>(null);
+
+  // Catch Me Up AI states
+  const [summary, setSummary] = useState<string | null>(null);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
+
+  const handleCatchMeUp = async () => {
+    if (!session || !activeGroupId) return;
+    setLoadingSummary(true);
+    setShowSummaryModal(true);
+    try {
+      const res = await fetch(`/api/messages/summarize?userId=${session.id}&groupId=${activeGroupId}`);
+      const data = await res.json();
+      if (res.ok) {
+        setSummary(data.summary);
+      } else {
+        setSummary("Failed to generate summary: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      console.error(err);
+      setSummary("Error connecting to summarization service.");
+    } finally {
+      setLoadingSummary(false);
+    }
+  };
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const rec = new SpeechRecognition();
+        rec.continuous = true;
+        rec.interimResults = false;
+        rec.lang = "en-US";
+
+        rec.onstart = () => {
+          setIsListening(true);
+        };
+
+        rec.onend = () => {
+          setIsListening(false);
+        };
+
+        rec.onresult = (event: any) => {
+          const transcript = event.results[event.results.length - 1][0].transcript;
+          setNewMessageText((prev) => {
+            const separator = prev.trim() ? " " : "";
+            return prev + separator + transcript;
+          });
+        };
+
+        setRecognition(rec);
+      }
+    }
+  }, []);
+
+  const startVoiceRecording = async () => {
+    // 1. Start Speech Recognition for voice-to-text transcription
+    if (recognition) {
+      try {
+        recognition.start();
+      } catch (err) {
+        console.error("SpeechRecognition start error:", err);
+      }
+    }
+
+    // 2. Start Audio Recording (MediaRecorder) for audio voice note
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setVoiceNote({
+            name: `Voice Message (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
+            type: "audio/webm",
+            dataUrl: reader.result as string,
+          });
+        };
+        reader.readAsDataURL(audioBlob);
+
+        // Stop all tracks on the stream to release the mic
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      mediaRecorder.start();
+    } catch (err) {
+      console.error("MediaRecorder start error:", err);
+    }
+  };
+
+  const stopVoiceRecording = () => {
+    if (recognition && isListening) {
+      try {
+        recognition.stop();
+      } catch (err) {
+        console.error("SpeechRecognition stop error:", err);
+      }
+    }
+
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch (err) {
+        console.error("MediaRecorder stop error:", err);
+      }
+    }
+  };
+
+  const toggleSpeechRecognition = () => {
+    if (isListening || (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording")) {
+      stopVoiceRecording();
+    } else {
+      startVoiceRecording();
+    }
+  };
+
+  const makeTextProfessional = async () => {
+    if (!newMessageText.trim()) return;
+    setIsRewriting(true);
+
+    // Simulate AI polishing delay for premium UX
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const text = newMessageText.trim();
+    const lowText = text.toLowerCase();
+    let professionalText = "";
+
+    if (lowText === "hi" || lowText === "hello" || lowText === "hey") {
+      professionalText = "Hello team, I hope you are all doing well.";
+    } else if (lowText.includes("did the task") || lowText.includes("done with the task") || lowText.includes("completed the task")) {
+      professionalText = "I have successfully completed the assigned task. It is now ready for your review and feedback.";
+    } else if (lowText.includes("help") || lowText.includes("need help") || lowText.includes("stuck")) {
+      professionalText = "I am currently facing a blocker on my current workload. Could anyone assist me with resolving this issue?";
+    } else if (lowText.includes("meet tomorrow") || lowText.includes("can we meet")) {
+      professionalText = "Could we schedule a brief sync-up meeting tomorrow to discuss our project milestones and coordinate next steps?";
+    } else if (lowText.includes("verify") || lowText.includes("check")) {
+      professionalText = "Kindly proceed with verifying the structural consistency and alignment of the current implementations.";
+    } else if (lowText.includes("sorry") || lowText.includes("my bad")) {
+      professionalText = "I apologize for the oversight. I will update the implementation immediately to ensure compliance.";
+    } else {
+      professionalText = `Regarding our current coordination, ${text[0].toLowerCase() + text.slice(1)}. Please review at your earliest convenience.`;
+    }
+
+    setNewMessageText(professionalText);
+    setIsRewriting(false);
+  };
+
   // Active Group states
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [activeGroup, setActiveGroup] = useState<Group | null>(null);
@@ -59,13 +248,6 @@ export default function DashboardPage() {
     }
     setSession(user);
 
-    const savedGroupId = localStorage.getItem("active_group_id");
-    if (!savedGroupId) {
-      const currentQuery = typeof window !== "undefined" ? window.location.search : "";
-      window.location.href = `/groups${currentQuery}`;
-      return;
-    }
-
     // If user already has an active workspace group selected AND has a pending redirect URL, send them straight there.
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -76,8 +258,33 @@ export default function DashboardPage() {
       }
     }
 
-    setActiveGroupId(savedGroupId);
-    fetchGroupDetails(user.id, savedGroupId);
+    const savedGroupId = localStorage.getItem("active_group_id");
+    if (savedGroupId) {
+      setActiveGroupId(savedGroupId);
+      fetchGroupDetails(user.id, savedGroupId);
+    } else {
+      // Instead of redirecting immediately, let's see if the user belongs to any groups.
+      // If they do, auto-select the first group. Otherwise, send them to choose a group.
+      const autoSelectGroup = async () => {
+        try {
+          const res = await fetch(`/api/groups?userId=${user.id}`);
+          const data = await res.json();
+          if (res.ok && data.groups && data.groups.length > 0) {
+            const firstGroupId = data.groups[0].id;
+            localStorage.setItem("active_group_id", firstGroupId);
+            setActiveGroupId(firstGroupId);
+            fetchGroupDetails(user.id, firstGroupId);
+          } else {
+            const currentQuery = typeof window !== "undefined" ? window.location.search : "";
+            window.location.href = `/groups${currentQuery}`;
+          }
+        } catch (err) {
+          console.error("Error auto-selecting group:", err);
+          window.location.href = "/groups";
+        }
+      };
+      autoSelectGroup();
+    }
   }, []);
 
   const fetchGroupDetails = async (userId: string, groupId: string) => {
@@ -155,10 +362,14 @@ export default function DashboardPage() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessageText.trim() || !session || !activeGroupId) return;
+    if ((!newMessageText.trim() && !attachedFile && !voiceNote) || !session || !activeGroupId) return;
 
     const messageText = newMessageText.trim();
+    const fileToSend = attachedFile || voiceNote;
+
     setNewMessageText("");
+    setAttachedFile(null);
+    setVoiceNote(null);
     setSendingMessage(true);
 
     try {
@@ -172,6 +383,7 @@ export default function DashboardPage() {
           groupId: activeGroupId,
           userName: session.name,
           content: messageText,
+          fileAttachment: fileToSend,
         }),
       });
 
@@ -261,26 +473,26 @@ export default function DashboardPage() {
 
         {/* Dynamic Analytics Summary Cards (Integrates Custom Colors) */}
         <section className="grid grid-cols-4 gap-6 w-full mq1125:grid-cols-2 mq800:grid-cols-1">
-          <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
+          <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border-l-4 border-l-sky-500 border-y border-r border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300">
             <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Upcoming Meetings</span>
-            <span className="text-5xl font-bold text-[#5F8D9E] tracking-tight">{upcomingMeetings.length}</span>
+            <span className="text-5xl font-bold text-sky-600 tracking-tight">{upcomingMeetings.length}</span>
             <span className="text-xs font-['DM_Sans'] text-slate-400">Total scheduled: {meetings.length}</span>
           </div>
 
-          <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
+          <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border-l-4 border-l-purple-500 border-y border-r border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300">
             <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Pending Tasks</span>
-            <span className="text-5xl font-bold text-slate-700 tracking-tight">{pendingTasks.length}</span>
+            <span className="text-5xl font-bold text-purple-650 tracking-tight">{pendingTasks.length}</span>
             <span className="text-xs font-['DM_Sans'] text-slate-400">Completed tasks: {completedTasksCount}</span>
           </div>
 
-          <div className="shadow-[0_4px_25px_-5px_rgba(95,141,158,0.04)] rounded-2xl bg-white border border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-350 transition-all duration-300">
+          <div className="shadow-[0_4px_25px_-5px_rgba(15,23,42,0.04)] rounded-2xl bg-white border-l-4 border-l-rose-500 border-y border-r border-solid border-slate-200 p-8 flex flex-col gap-2 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300 transition-all duration-300">
             <span className="text-sm font-semibold text-slate-500 font-['DM_Sans']">Critical Hotspots</span>
-            <span className="text-5xl font-bold text-red-650 tracking-tight">{highPriorityTasksCount}</span>
+            <span className="text-5xl font-bold text-rose-600 tracking-tight">{highPriorityTasksCount}</span>
             <span className="text-xs font-['DM_Sans'] text-slate-400">High priority pending tasks</span>
           </div>
 
           {/* Glowing Gradient Completion card */}
-          <div className="shadow-[0_8px_30px_rgba(95,141,158,0.08)] rounded-2xl bg-gradient-to-br from-[#5F8D9E] to-[#8FB1BD] p-8 flex flex-col gap-2 text-white hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+          <div className="shadow-[0_8px_30px_rgba(9,124,135,0.12)] rounded-2xl bg-gradient-to-br from-[#097C87] to-[#23CED9] p-8 flex flex-col gap-2 text-white hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
             <span className="text-sm font-semibold text-white/90 font-['DM_Sans']">Main Completion</span>
             <span className="text-5xl font-bold text-white tracking-tight">
               {tasks.length > 0 ? Math.round((completedTasksCount / tasks.length) * 100) : 0}%
@@ -398,9 +610,19 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
-            <span className="text-xs bg-[#5F8D9E]/15 border border-solid border-[#5F8D9E]/35 text-[#5F8D9E] px-2.5 py-1 rounded-full font-bold font-mono">
-              {messages.length} messages
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs bg-[#5F8D9E]/15 border border-solid border-[#5F8D9E]/35 text-[#5F8D9E] px-2.5 py-1 rounded-full font-bold font-mono">
+                {messages.length} messages
+              </span>
+              <button
+                type="button"
+                onClick={handleCatchMeUp}
+                className="cursor-pointer border-none py-1.5 px-3 bg-[#097C87] hover:bg-[#23CED9] text-white rounded-lg text-xs font-bold transition duration-200 flex items-center gap-1.5 shadow-sm hover:shadow"
+                title="Summarize recent chat messages using AI"
+              >
+                ⚡ Catch Me Up (AI)
+              </button>
+            </div>
           </div>
 
           {/* Chat message list area */}
@@ -453,7 +675,59 @@ export default function DashboardPage() {
                           ? "bg-[#5F8D9E] text-white rounded-tr-none"
                           : "bg-white text-slate-800 border border-solid border-slate-200/60 rounded-tl-none"
                       }`}>
-                        {msg.content}
+                        {msg.content && <div className="break-words">{msg.content}</div>}
+                        {msg.fileAttachment && (
+                          <div className={`mt-2 p-2.5 rounded-xl border border-solid flex items-center gap-3 ${
+                            isMe ? "bg-white/15 border-white/20 text-white" : "bg-slate-50 border-slate-200 text-slate-800"
+                          }`}>
+                            {msg.fileAttachment.type.startsWith("image/") ? (
+                              <div className="flex flex-col gap-1.5 w-full">
+                                <img
+                                  src={msg.fileAttachment.dataUrl}
+                                  alt={msg.fileAttachment.name}
+                                  className="max-w-xs max-h-48 rounded-lg object-cover border border-solid border-slate-200/50"
+                                />
+                                <span className="text-xs opacity-75 truncate max-w-[200px]">{msg.fileAttachment.name}</span>
+                              </div>
+                            ) : msg.fileAttachment.type.startsWith("audio/") ? (
+                              <div className="flex flex-col gap-1.5 w-full min-w-[260px]">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xl">🎙️</span>
+                                  <span className="text-xs font-bold truncate">{msg.fileAttachment.name}</span>
+                                </div>
+                                <audio
+                                  src={msg.fileAttachment.dataUrl}
+                                  controls
+                                  className={`w-full h-8 scale-95 origin-left ${
+                                    isMe ? "filter invert brightness-200 opacity-90" : ""
+                                  }`}
+                                />
+                              </div>
+                            ) : (
+                              <>
+                                <span className="text-2xl shrink-0">
+                                  {msg.fileAttachment.name.endsWith(".pdf") ? "📕" : msg.fileAttachment.name.endsWith(".ppt") || msg.fileAttachment.name.endsWith(".pptx") ? "📙" : "📄"}
+                                </span>
+                                <div className="flex flex-col min-w-0 flex-1">
+                                  <span className="text-xs font-bold truncate">{msg.fileAttachment.name}</span>
+                                  <span className="text-[10px] opacity-75">
+                                    {msg.fileAttachment.name.endsWith(".pdf") ? "PDF Document" : "PowerPoint Presentation"}
+                                  </span>
+                                </div>
+                                <a
+                                  href={msg.fileAttachment.dataUrl}
+                                  download={msg.fileAttachment.name}
+                                  className={`p-1.5 rounded-lg hover:bg-black/10 transition-colors ${
+                                    isMe ? "text-white" : "text-[#5F8D9E]"
+                                  }`}
+                                  title="Download File"
+                                >
+                                  📥
+                                </a>
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -463,30 +737,159 @@ export default function DashboardPage() {
           </div>
 
           {/* Send Message Form */}
-          <form onSubmit={handleSendMessage} className="flex gap-3">
-            <input
-              type="text"
-              value={newMessageText}
-              onChange={(e) => setNewMessageText(e.target.value)}
-              placeholder="Type a message to the group..."
-              disabled={sendingMessage}
-              className="flex-1 bg-white border border-solid border-slate-200 rounded-xl py-3.5 px-4 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#5F8D9E] transition"
-            />
-            <button
-              type="submit"
-              disabled={sendingMessage || !newMessageText.trim()}
-              className="cursor-pointer border-none py-3.5 px-6 bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white font-bold rounded-xl text-base shadow-sm hover:shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 flex items-center justify-center gap-2"
-            >
-              {sendingMessage ? "Sending..." : "Send"}
-              <svg className="w-4 h-4 fill-current rotate-90" viewBox="0 0 20 20">
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-              </svg>
-            </button>
+          <form onSubmit={handleSendMessage} className="flex flex-col gap-3">
+            <div className="flex flex-wrap gap-2">
+              {/* Attached File Preview Pill */}
+              {attachedFile && (
+                <div className="self-start flex items-center gap-2 bg-slate-100 border border-solid border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 animate-fade-in-up">
+                  <span>📁 {attachedFile.name} ({attachedFile.type.startsWith("image/") ? "Photo" : attachedFile.name.endsWith(".pdf") ? "PDF" : "PPT"})</span>
+                  <button
+                    type="button"
+                    onClick={() => setAttachedFile(null)}
+                    className="cursor-pointer border-none bg-none hover:text-red-500 font-bold ml-1 text-sm leading-none"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
+              {/* Voice Note Preview Pill */}
+              {voiceNote && (
+                <div className="self-start flex items-center gap-2 bg-emerald-50 border border-solid border-emerald-150 rounded-lg px-3 py-1.5 text-xs text-emerald-800 animate-fade-in-up">
+                  <span>🎙️ Voice Note Ready</span>
+                  <audio src={voiceNote.dataUrl} controls className="h-6 w-32 scale-90" />
+                  <button
+                    type="button"
+                    onClick={() => setVoiceNote(null)}
+                    className="cursor-pointer border-none bg-none hover:text-red-500 font-bold ml-1 text-sm leading-none"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3 items-center w-full relative">
+              <div className="flex-1 relative flex items-center">
+                <input
+                  type="text"
+                  value={newMessageText}
+                  onChange={(e) => setNewMessageText(e.target.value)}
+                  placeholder={isListening ? "Listening... Speak now..." : "Type a message to the group..."}
+                  disabled={sendingMessage}
+                  className="w-full bg-white border border-solid border-slate-200 rounded-xl py-3.5 pl-4 pr-28 text-base font-['Space_Grotesk'] outline-none text-slate-900 placeholder:text-slate-400 focus:border-[#5F8D9E] transition"
+                />
+
+                {/* Hidden File Input */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept=".pdf,.ppt,.pptx,image/*"
+                  className="hidden"
+                />
+
+                {/* AI Professional Polisher (Sparkles Button) */}
+                <button
+                  type="button"
+                  onClick={makeTextProfessional}
+                  disabled={isRewriting || !newMessageText.trim()}
+                  className={`absolute right-20 p-1 cursor-pointer border-none bg-transparent transition ${
+                    isRewriting ? "text-amber-500 animate-spin" : "text-slate-400 hover:text-amber-500 disabled:opacity-30 disabled:cursor-not-allowed"
+                  }`}
+                  title="Make Professional (AI ✨)"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 12.27l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9zm10-7l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9zm-4 7.5l-.9-2.5-2.5-.9 2.5-.9.9-2.5.9 2.5 2.5.9-2.5.9z" />
+                  </svg>
+                </button>
+
+                {/* Voice to Text / Audio Record Button */}
+                <button
+                  type="button"
+                  onClick={toggleSpeechRecognition}
+                  className={`absolute right-12 p-1 cursor-pointer border-none bg-transparent transition ${
+                    isListening ? "text-red-500 animate-pulse scale-110" : "text-slate-400 hover:text-red-500"
+                  }`}
+                  title={isListening ? "Recording Voice & Transcribing... Click to stop" : "Record Voice Message & Transcribe"}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                  </svg>
+                </button>
+
+                {/* Upload Trigger Button */}
+                <button
+                  type="button"
+                  onClick={triggerFileInput}
+                  className="absolute right-4 p-1 cursor-pointer border-none bg-transparent text-slate-400 hover:text-slate-600 transition"
+                  title="Upload File (PDF, PPT, Photo)"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                </button>
+              </div>
+
+              <button
+                type="submit"
+                disabled={sendingMessage || (!newMessageText.trim() && !attachedFile && !voiceNote)}
+                className="cursor-pointer border-none py-3.5 px-6 bg-[#5F8D9E] hover:bg-[#7CA7B8] text-white font-bold rounded-xl text-base shadow-sm hover:shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 flex items-center justify-center gap-2"
+              >
+                {sendingMessage ? "Sending..." : "Send"}
+                <svg className="w-4 h-4 fill-current rotate-90" viewBox="0 0 20 20">
+                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                </svg>
+              </button>
+            </div>
           </form>
         </section>
       </main>
 
       <FrameComponent3 />
+
+      {showSummaryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white/90 border border-solid border-slate-200/80 rounded-2xl p-8 max-w-lg w-full mx-4 shadow-[0_20px_50px_rgba(15,23,42,0.15)] flex flex-col gap-6 animate-scale-up">
+            <div className="flex justify-between items-center border-b border-solid border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">✨</span>
+                <h3 className="m-0 text-xl font-extrabold text-slate-800 tracking-tight font-['Space_Grotesk']">
+                  AI Work Group Summary
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSummaryModal(false)}
+                className="cursor-pointer border-none bg-transparent text-slate-400 hover:text-slate-650 text-xl font-bold font-mono"
+              >
+                ✕
+              </button>
+            </div>
+
+            {loadingSummary ? (
+              <div className="flex flex-col items-center gap-4 py-8">
+                <div className="w-10 h-10 border-4 border-slate-200 border-t-[#097C87] rounded-full animate-spin"></div>
+                <span className="text-sm text-slate-500 font-medium font-['DM_Sans'] animate-pulse">Analyzing recent group discussion...</span>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4 text-slate-700 font-['DM_Sans'] leading-relaxed whitespace-pre-line text-sm max-h-[350px] overflow-y-auto pr-2">
+                {summary}
+              </div>
+            )}
+
+            <div className="flex justify-end border-t border-solid border-slate-100 pt-4">
+              <button
+                type="button"
+                onClick={() => setShowSummaryModal(false)}
+                className="cursor-pointer border-none py-2.5 px-5 bg-[#097C87] hover:bg-[#23CED9] text-white rounded-xl text-sm font-bold shadow-sm transition duration-200"
+              >
+                Got it, thanks!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

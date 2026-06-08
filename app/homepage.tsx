@@ -1,18 +1,24 @@
 "use client";
 import type { NextPage } from "next";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import FrameComponent from "../components/frame-component";
 import Heading from "../components/heading";
 import ServicesBlock from "../components/services-block";
 import FrameComponent1 from "../components/frame-component1";
 import FrameComponent2 from "../components/frame-component2";
 import FrameComponent3 from "../components/frame-component3";
-import { getSession } from "./lib/auth";
+import { getSession, UserSession } from "./lib/auth";
 
 const Homepage: NextPage = () => {
+  const [session, setSession] = useState<UserSession | null>(null);
+
+  useEffect(() => {
+    setSession(getSession());
+  }, []);
+
   const onGetStartedTextClick = useCallback(() => {
-    const session = getSession();
-    if (session) {
+    const sessionVal = getSession();
+    if (sessionVal) {
       window.location.href = "/dashboard";
     } else {
       window.location.href = "/login";
@@ -22,6 +28,14 @@ const Homepage: NextPage = () => {
   return (
     <div className="w-full h-auto min-h-screen relative bg-[#fff] overflow-hidden flex flex-col items-start pt-[61px] px-0 pb-0 box-border gap-20 leading-[normal] tracking-[normal] text-left text-lg text-grays-black font-['Space_Grotesk'] mq450:gap-5 mq800:gap-10">
       <FrameComponent />
+
+      {session && (
+        <div className="w-full max-w-7xl mx-auto px-16 -mt-10 -mb-10 box-border animate-fade-in-up">
+          <h1 className="text-[56.6px] font-extrabold leading-[1.1] tracking-tight font-['Space_Grotesk'] text-grays-black mq450:text-[32px] mq800:text-[44px]">
+            Welcome back, <span className="text-[#16A34A]">{session.name}</span>!
+          </h1>
+        </div>
+      )}
 
       {/* Hero Section - Redesigned into responsive two-column grid to remove empty space */}
       <section className="w-full max-w-7xl mx-auto px-16 box-border flex items-center justify-between gap-12 shrink-0 text-left text-grays-black font-[Inter] mq1125:flex-col mq1125:px-8 mq1125:gap-16">

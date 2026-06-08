@@ -55,12 +55,28 @@ export default function TasksPage() {
     setSession(user);
 
     const groupId = localStorage.getItem("active_group_id");
-    if (!groupId) {
-      window.location.href = "/groups";
-      return;
+    if (groupId) {
+      initPage(user.id, groupId);
+    } else {
+      // Auto-select the first group if user has any groups, otherwise redirect to workspace page
+      const autoSelectGroup = async () => {
+        try {
+          const res = await fetch(`/api/groups?userId=${user.id}`);
+          const data = await res.json();
+          if (res.ok && data.groups && data.groups.length > 0) {
+            const firstGroupId = data.groups[0].id;
+            localStorage.setItem("active_group_id", firstGroupId);
+            initPage(user.id, firstGroupId);
+          } else {
+            window.location.href = "/groups?redirect=/tasks";
+          }
+        } catch (err) {
+          console.error("Error auto-selecting group:", err);
+          window.location.href = "/groups?redirect=/tasks";
+        }
+      };
+      autoSelectGroup();
     }
-
-    initPage(user.id, groupId);
   }, []);
 
   const initPage = async (userId: string, groupId: string) => {
